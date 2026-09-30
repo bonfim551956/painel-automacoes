@@ -238,16 +238,17 @@
 
   var FLOWS = [
     { key: "poscompra", group: "posvenda", moment: "Depois da compra", title: "Parabéns e Indique e Ganhe",
-      desc: "Mensagem de boas-vindas e a arte do Indique e Ganhe, 24h após a venda." },
+      desc: "Parabéns assim que a venda é cadastrada e a arte do Indique e Ganhe 24h depois." },
     { key: "retirada", group: "posvenda", moment: "Óculos pronto e não retirado", title: "Lembrete de retirada",
-      desc: "Lembrete para quem recebeu o aviso de óculos pronto e ainda não buscou após 14 dias." },
+      desc: "Dois lembretes para quem recebeu o aviso de óculos pronto e ainda não buscou: aos 7 e aos 14 dias." },
     { key: "jornada", group: "jornada", moment: "Depois da entrega", title: "Acompanhamento pós-entrega",
       desc: "Adaptação, indicação, manutenção, segundo par e renovação do exame, ao longo de um ano." }
   ];
   var MSG_NAMES = {
-    parabens: ["Parabéns pela compra", "24h após a compra"],
-    indique_ganhe: ["Indique e Ganhe com arte", "Logo depois do parabéns"],
-    lembrete_retirada: ["Lembrete de retirada", "14 dias após o aviso de pronto"],
+    parabens: ["Parabéns pela compra", "Assim que a venda é cadastrada"],
+    indique_ganhe: ["Indique e Ganhe com arte", "24h após a compra"],
+    lembrete_retirada_7d: ["Primeiro lembrete", "7 dias após o aviso de pronto"],
+    lembrete_retirada_14d: ["Segundo lembrete", "14 dias após o aviso de pronto"],
     d15: ["Adaptação às lentes", "15 dias após a entrega"],
     d30: ["Indique e Ganhe", "30 dias após a entrega"],
     d90: ["Manutenção gratuita", "3 meses após a entrega"],
