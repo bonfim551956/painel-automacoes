@@ -273,7 +273,7 @@
   var MAX = 4000;
 
   var sb = null;
-  var state = { user: null, data: null, open: {}, confirming: null, busy: {}, flowErr: {}, editing: {}, drafts: {}, testing: {} };
+  var state = { user: null, data: null, open: {}, confirming: null, busy: {}, flowErr: {}, editing: {}, drafts: {}, testing: {}, credForm: {} };
   var app = document.getElementById("app");
 
   // ---------- utilidades ----------
@@ -311,6 +311,9 @@
     if (/sem_permissao/.test(m)) return "Seu usuário ainda não tem acesso ao painel. Peça para liberarem o seu e-mail.";
     if (/texto_invalido/.test(m)) return "O texto não pode ficar vazio nem passar de 4.000 caracteres.";
     if (/telefone_invalido/.test(m)) return "Informe um celular com DDD, por exemplo (13) 98225-7862.";
+    if (/token_igual_instancia/.test(m)) return "O token ficou igual ao ID da instância. Na Z-API, o token é o campo logo abaixo do ID.";
+    if (/instancia_invalida/.test(m)) return "ID da instância inválido. Copie só letras e números, sem espaços.";
+    if (/token_invalido/.test(m)) return "Token inválido. Copie só letras e números, sem espaços.";
     if (/Invalid login credentials/i.test(m)) return "E-mail ou senha incorretos.";
     if (/Email not confirmed/i.test(m)) return "Este e-mail ainda não foi confirmado.";
     if (/JWT|expired|session/i.test(m)) return "Sua sessão expirou. Entre de novo.";
@@ -393,6 +396,37 @@
       .then(function () { delete state.busy["l:" + loja[0]]; render(); });
   }
 
+  function saveCred(loja, inst, tok, errEl, btn) {
+    btn.disabled = true; btn.textContent = "Salvando";
+    rpc("painel_set_credencial", { p_loja: loja[0], p_instancia: inst, p_token: tok }).then(function () {
+      delete state.credForm[loja[0]];
+      if ((state.data.credenciais || []).indexOf(loja[0]) === -1) state.data.credenciais = (state.data.credenciais || []).concat([loja[0]]);
+      toast("WhatsApp de " + loja[1] + " salvo. Faça um teste antes de ligar");
+      render();
+    }).catch(function (e) {
+      errEl.textContent = errText(e); btn.disabled = false; btn.textContent = "Salvar WhatsApp";
+    });
+  }
+
+  function renderCredForm(loja) {
+    var inst = el("input", { id: "inst-" + loja[0], type: "text", autocomplete: "off", spellcheck: "false", autocapitalize: "off" });
+    var tok = el("input", { id: "tok-" + loja[0], type: "text", autocomplete: "off", spellcheck: "false", autocapitalize: "off" });
+    var err = el("p", { class: "inline-err", role: "alert" });
+    var btn = el("button", { class: "btn primary", type: "button", text: "Salvar WhatsApp", onclick: function () {
+      var a = inst.value.trim(), t = tok.value.trim();
+      if (!a || !t) { err.textContent = "Preencha o ID da instância e o token."; return; }
+      if (a === t) { err.textContent = "O token ficou igual ao ID da instância. Na Z-API, o token é o campo logo abaixo do ID."; tok.setAttribute("aria-invalid", "true"); tok.focus(); return; }
+      saveCred(loja, a, t, err, btn);
+    }});
+    return el("div", { class: "confirm" }, [
+      el("p", { text: "Na Z-API, abra a instância de " + loja[1] + " e copie os dois campos. Os valores ficam guardados de forma criptografada e não aparecem mais no painel." }),
+      el("div", { class: "field" }, [el("label", { for: "inst-" + loja[0], text: "ID da instância" }), inst]),
+      el("div", { class: "field" }, [el("label", { for: "tok-" + loja[0], text: "Token da instância" }), tok]),
+      el("div", { class: "row" }, [btn, el("button", { class: "btn", type: "button", text: "Cancelar", onclick: function () { delete state.credForm[loja[0]]; render(); } })]),
+      err
+    ]);
+  }
+
   function renderStores() {
     var d = state.data, ativas = d.lojas_ativas || [], creds = d.credenciais || [];
     return el("section", { class: "stores", "aria-labelledby": "t-lojas" }, [
@@ -411,8 +445,12 @@
           if (on) setLoja(l, false); else { state.confirming = "loja:" + l[0]; render(); }
         })
       ]);
-      if (!confirming) return row;
-      return el("div", null, [row, el("div", { class: "confirm", role: "alert" }, [
+      var credLink = el("button", { class: "link", type: "button", text: hasCred ? "Trocar WhatsApp" : "Cadastrar WhatsApp",
+        onclick: function () { state.credForm[l[0]] = !state.credForm[l[0]]; render(); var f = document.getElementById("inst-" + l[0]); if (f) f.focus(); } });
+      row.firstChild.appendChild(el("div", null, [credLink]));
+      var extra = state.credForm[l[0]] ? renderCredForm(l) : null;
+      if (!confirming) return extra ? el("div", null, [row, extra]) : row;
+      return el("div", null, [row, extra, el("div", { class: "confirm", role: "alert" }, [
         el("p", { text: "Ao ligar " + l[1] + ", os clientes dessa loja passam a receber as mensagens dos fluxos ligados. Quer ligar?" }),
         el("div", { class: "row" }, [
           el("button", { class: "btn warn", type: "button", text: "Ligar " + l[1], onclick: function () { setLoja(l, true); } }),
