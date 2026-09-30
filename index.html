@@ -207,6 +207,14 @@
   .test { margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--line); }
   .test .row { align-items: flex-end; }
   .test .field { margin: 0; flex: 1 1 160px; }
+  .stores { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 32px; }
+  .stores h2 { font-size: 16px; line-height: 1.2; margin: 0 0 4px; font-weight: 700; }
+  .stores > p { margin: 0 0 8px; font-size: 14px; color: var(--muted); }
+  .store { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); }
+  .store:first-of-type { border-top: none; }
+  .store b { display: block; font-size: 16px; }
+  .store small { font-size: 12px; color: var(--muted); }
+  .store small.warn { color: var(--orange); }
   .gap { font-size: 12px; color: var(--muted); margin: 8px 0 0; }
   .userline { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); margin-top: 8px; }
 </style>
@@ -374,6 +382,44 @@
       state.flowErr[flow.key] = errText(e);
       return load();
     }).then(function () { delete state.busy["f:" + flow.key]; render(); });
+  }
+
+  function setLoja(loja, on) {
+    state.busy["l:" + loja[0]] = true; state.confirming = null; render();
+    rpc("painel_set_loja", { p_loja: loja[0], p_ativo: on }).then(function (v) {
+      state.data.lojas_ativas = v || [];
+      toast(loja[1] + (on ? " ligada" : " desligada"));
+    }).catch(function (e) { toast(errText(e)); return load(); })
+      .then(function () { delete state.busy["l:" + loja[0]]; render(); });
+  }
+
+  function renderStores() {
+    var d = state.data, ativas = d.lojas_ativas || [], creds = d.credenciais || [];
+    return el("section", { class: "stores", "aria-labelledby": "t-lojas" }, [
+      el("h2", { id: "t-lojas", text: "Lojas participantes" }),
+      el("p", { text: "Só clientes das lojas ligadas recebem as mensagens. Os testes funcionam em qualquer loja." })
+    ].concat(LOJAS.map(function (l) {
+      var on = ativas.indexOf(l[0]) !== -1, busy = !!state.busy["l:" + l[0]], hasCred = creds.indexOf(l[0]) !== -1;
+      var confirming = state.confirming === "loja:" + l[0];
+      var row = el("div", { class: "store" }, [
+        el("div", null, [
+          el("b", { text: l[1] }),
+          el("small", { class: hasCred ? "" : "warn", text: hasCred ? (on ? "Enviando pelo WhatsApp da loja" : "Desligada") :
+            "WhatsApp da loja ainda não cadastrado" + (on ? ": mensagens ficam aguardando" : "") })
+        ]),
+        switchEl(on, (on ? "Desligar " : "Ligar ") + l[1], busy, function () {
+          if (on) setLoja(l, false); else { state.confirming = "loja:" + l[0]; render(); }
+        })
+      ]);
+      if (!confirming) return row;
+      return el("div", null, [row, el("div", { class: "confirm", role: "alert" }, [
+        el("p", { text: "Ao ligar " + l[1] + ", os clientes dessa loja passam a receber as mensagens dos fluxos ligados. Quer ligar?" }),
+        el("div", { class: "row" }, [
+          el("button", { class: "btn warn", type: "button", text: "Ligar " + l[1], onclick: function () { setLoja(l, true); } }),
+          el("button", { class: "btn", type: "button", text: "Cancelar", onclick: function () { state.confirming = null; render(); } })
+        ])
+      ])]);
+    })));
   }
 
   function saveMsg(flow, m, patch, doneMsg) {
@@ -548,6 +594,7 @@
     if (!state.data) return;
     var focusLabel = document.activeElement && document.activeElement.getAttribute("aria-label");
     app.textContent = "";
+    app.appendChild(renderStores());
     app.appendChild(el("ol", { class: "timeline" }, FLOWS.map(renderFlow)));
     app.appendChild(el("div", { class: "userline" }, [
       "Conectado como " + ((state.user && state.user.email) || ""),
