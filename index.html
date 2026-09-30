@@ -207,6 +207,7 @@
   .test { margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--line); }
   .test .row { align-items: flex-end; }
   .test .field { margin: 0; flex: 1 1 160px; }
+  .gap { font-size: 12px; color: var(--muted); margin: 8px 0 0; }
   .userline { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); margin-top: 8px; }
 </style>
 </head>
@@ -437,7 +438,7 @@
       body = el("div", null, [
         ta,
         el("div", { class: "editor-bar" }, [chips, count]),
-        el("p", { class: "hint", text: "Use *asteriscos* para negrito no WhatsApp. As variáveis são trocadas pelos dados de cada cliente." }),
+        el("p", { class: "hint", text: "Use *asteriscos* para negrito. Para dividir em duas mensagens, coloque uma linha só com --- entre os blocos (o segundo sai 30 segundos depois)." }),
         el("div", { class: "row" }, [
           el("button", { class: "btn primary", type: "button", disabled: busy ? "disabled" : null, text: busy ? "Salvando" : "Salvar texto",
             onclick: function () {
@@ -452,9 +453,13 @@
         ])
       ]);
     } else {
-      var bubble = el("div", { class: "bubble" }); bubble.appendChild(whatsappText(m.texto));
+      var blocks = String(m.texto || "").split(/\n[ \t]*-{3,}[ \t]*\n/).filter(function (t) { return t.trim(); });
+      var bubbles = el("div", null, blocks.map(function (t, i) {
+        var bb = el("div", { class: "bubble" }); bb.appendChild(whatsappText(t.trim()));
+        return i === 0 ? bb : el("div", null, [el("p", { class: "gap", text: "30 segundos depois" }), bb]);
+      }));
       body = el("div", null, [
-        bubble,
+        bubbles,
         m.imagem ? el("span", { class: "tag", text: "Enviada com a arte do Indique e Ganhe" }) : null,
         el("div", null, [el("button", { class: "link", type: "button", text: "Editar texto", onclick: function () {
           state.editing[id] = true; render();
