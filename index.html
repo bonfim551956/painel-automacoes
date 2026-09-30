@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Automações do WhatsApp | Óticas Idealize</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👓</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F5F5;
+    --surface: #FAFAFA;
+    --line: #DCE3E1;
+    --text: #1A1A1A;
+    --muted: #55605E;
+    --teal: #0E7C71;
+    --teal-tint: #E2F2EF;
+    --orange: #B4501A;
+    --orange-brand: #F07327;
+    --orange-tint: #FDEDE3;
+    --on-teal: #FAFAFA;
+    --focus: #F07327;
+    --radius-lg: 16px;
+    --radius-sm: 8px;
+    color-scheme: light;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0F0F0F; --surface: #1A1A1A; --line: #2E3533; --text: #F5F5F5; --muted: #A6B0AE;
+      --teal: #3CC4B4; --teal-tint: #12302C; --orange: #F29A5E; --orange-tint: #33200F;
+      --on-teal: #0F0F0F; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0F0F0F; --surface: #1A1A1A; --line: #2E3533; --text: #F5F5F5; --muted: #A6B0AE;
+    --teal: #3CC4B4; --teal-tint: #12302C; --orange: #F29A5E; --orange-tint: #33200F;
+    --on-teal: #0F0F0F; color-scheme: dark;
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html { height: 100%; scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    margin: 0; min-height: 100%;
+    background: var(--bg); color: var(--text);
+    font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 16px; line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  button { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+
+  .wrap { max-width: 640px; margin: 0 auto; padding: 24px 16px 64px; }
+
+  header.top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 32px; }
+  .brandbar { width: 32px; height: 4px; background: var(--orange-brand); border-radius: 2px; margin-bottom: 12px; }
+  h1 { font-size: 24px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; letter-spacing: -0.01em; }
+  .lead { margin: 0; color: var(--muted); font-size: 14px; max-width: 42ch; }
+  .updated { color: var(--muted); font-size: 12px; margin-top: 8px; }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 40px;
+    padding: 8px 16px; border-radius: 999px; border: 1px solid var(--line);
+    background: var(--surface); cursor: pointer; font-size: 14px; font-weight: 600; white-space: nowrap;
+  }
+  .btn:hover { border-color: var(--teal); }
+  .btn:active { transform: translateY(1px); }
+  .btn[disabled] { opacity: .5; cursor: not-allowed; }
+  .btn.primary { background: var(--teal); border-color: var(--teal); color: var(--on-teal); }
+  .btn.warn { background: var(--orange); border-color: var(--orange); color: var(--on-teal); }
+
+  /* Linha do tempo do cliente */
+  .timeline { list-style: none; margin: 0; padding: 0; position: relative; }
+  .timeline::before {
+    content: ""; position: absolute; left: 11px; top: 16px; bottom: 16px; width: 2px; background: var(--line);
+  }
+  .flow { position: relative; padding-left: 40px; padding-bottom: 32px; }
+  .flow:last-child { padding-bottom: 0; }
+  .node {
+    position: absolute; left: 0; top: 20px; width: 24px; height: 24px; border-radius: 50%;
+    border: 2px solid var(--line); background: var(--bg); transition: background .2s, border-color .2s;
+  }
+  .flow.on .node { background: var(--teal); border-color: var(--teal); box-shadow: 0 0 0 4px var(--teal-tint); }
+  .moment { font-size: 12px; font-weight: 600; color: var(--muted); margin: 0 0 8px; padding-top: 22px; line-height: 1.2; }
+
+  .panel {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg);
+    padding: 16px; transition: border-color .2s, background .2s;
+  }
+  .flow.on .panel { border-color: var(--teal); }
+  .panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+  .panel h2 { font-size: 20px; line-height: 1.2; font-weight: 700; margin: 0 0 4px; }
+  .panel .desc { margin: 0; color: var(--muted); font-size: 14px; }
+
+  .stats { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .stat { font-size: 12px; padding: 4px 12px; border-radius: 999px; background: var(--bg); color: var(--muted); }
+  .stat b { color: var(--text); font-weight: 700; }
+  .stat.alert { background: var(--orange-tint); color: var(--orange); }
+  .stat.alert b { color: var(--orange); }
+
+  /* Interruptor */
+  .switch-wrap { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+  .switch {
+    position: relative; width: 56px; height: 32px; border-radius: 999px; border: none; cursor: pointer;
+    background: var(--line); transition: background .2s; padding: 0;
+  }
+  .switch::after {
+    content: ""; position: absolute; top: 4px; left: 4px; width: 24px; height: 24px; border-radius: 50%;
+    background: var(--surface); transition: transform .2s; box-shadow: 0 1px 2px rgba(15,15,15,.25);
+  }
+  .switch[aria-checked="true"] { background: var(--teal); }
+  .switch[aria-checked="true"]::after { transform: translateX(24px); }
+  .switch:hover:not([disabled]) { filter: brightness(1.05); }
+  .switch[disabled] { opacity: .5; cursor: not-allowed; }
+  .switch.busy::after { animation: pulse 1s ease-in-out infinite; }
+  .switch.small { width: 44px; height: 24px; }
+  .switch.small::after { width: 16px; height: 16px; }
+  .switch.small[aria-checked="true"]::after { transform: translateX(20px); }
+  .state-label { font-size: 12px; font-weight: 600; color: var(--muted); }
+  .flow.on .state-label.main { color: var(--teal); }
+  @keyframes pulse { 50% { opacity: .4; } }
+
+  /* Confirmação ao ligar */
+  .confirm {
+    margin-top: 16px; padding: 12px 16px; border-radius: var(--radius-sm);
+    background: var(--orange-tint); color: var(--text); font-size: 14px;
+  }
+  .confirm p { margin: 0 0 12px; }
+  .confirm .row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* Mensagens */
+  .disclosure {
+    margin-top: 16px; background: none; border: none; padding: 8px 0; cursor: pointer;
+    font-size: 14px; font-weight: 600; color: var(--teal); display: inline-flex; align-items: center; gap: 8px;
+  }
+  .disclosure .chev { display: inline-block; transition: transform .2s; }
+  .disclosure[aria-expanded="true"] .chev { transform: rotate(90deg); }
+  .msgs { list-style: none; margin: 8px 0 0; padding: 0; border-top: 1px solid var(--line); }
+  .msg { padding: 16px 0; border-bottom: 1px solid var(--line); }
+  .msg:last-child { border-bottom: none; padding-bottom: 0; }
+  .msg-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .msg h3 { font-size: 16px; line-height: 1.2; margin: 0; font-weight: 700; }
+  .msg .when { font-size: 12px; color: var(--muted); margin: 4px 0 0; }
+  .msg.off h3, .msg.off .bubble { opacity: .55; }
+  .bubble {
+    margin-top: 12px; padding: 12px; border-radius: 4px 12px 12px 12px;
+    background: var(--teal-tint); font-size: 14px; white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+  .tag { font-size: 12px; font-weight: 600; color: var(--teal); margin-top: 8px; display: inline-block; }
+
+  /* Estados */
+  .notice {
+    padding: 16px; border-radius: var(--radius-lg); background: var(--surface);
+    border: 1px solid var(--line); font-size: 14px;
+  }
+  .notice h2 { font-size: 16px; margin: 0 0 4px; }
+  .notice p { margin: 0 0 12px; color: var(--muted); }
+  .notice p:last-child { margin-bottom: 0; }
+  .notice.err { border-color: var(--orange); }
+  .inline-err { margin-top: 12px; font-size: 14px; color: var(--orange); }
+
+  .skeleton { height: 128px; border-radius: var(--radius-lg); background: var(--surface); border: 1px solid var(--line); margin-bottom: 24px; animation: pulse 1.4s ease-in-out infinite; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 16px);
+    background: var(--text); color: var(--bg); padding: 12px 16px; border-radius: 999px; font-size: 14px; font-weight: 600;
+    opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; max-width: calc(100% - 32px);
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  footer.note { margin-top: 48px; font-size: 12px; color: var(--muted); }
+
+  @media (min-width: 640px) {
+    .wrap { padding-top: 48px; }
+    h1 { font-size: 32px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+  }
+  /* Login */
+  .login { max-width: 400px; }
+  .field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 16px; }
+  .field label { font-size: 14px; font-weight: 600; }
+  .field input, .field select, textarea {
+    font: inherit; font-size: 16px; color: var(--text); background: var(--surface);
+    border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 12px; min-height: 48px; width: 100%;
+  }
+  .field input:focus, .field select:focus, textarea:focus { outline: 2px solid var(--teal); outline-offset: 0; border-color: var(--teal); }
+  .field input[aria-invalid="true"] { border-color: var(--orange); }
+  .hint { font-size: 12px; color: var(--muted); }
+  .login .btn { width: 100%; justify-content: center; min-height: 48px; }
+
+  /* Editor */
+  textarea { min-height: 200px; line-height: 1.5; resize: vertical; margin-top: 12px; }
+  .editor-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--bg); cursor: pointer; }
+  .chip:hover { border-color: var(--teal); color: var(--teal); }
+  .count { font-size: 12px; color: var(--muted); }
+  .count.over { color: var(--orange); }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .link { background: none; border: none; padding: 8px 0; color: var(--teal); font-size: 14px; font-weight: 600; cursor: pointer; }
+  .test { margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--line); }
+  .test .row { align-items: flex-end; }
+  .test .field { margin: 0; flex: 1 1 160px; }
+  .userline { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="brandbar" aria-hidden="true"></div>
+      <h1>Automações do WhatsApp</h1>
+      <p class="lead">Ligue, desligue e edite as mensagens automáticas que os clientes da Óticas Idealize recebem.</p>
+      <div class="updated" id="updated" aria-live="polite"></div>
+    </div>
+    <button class="btn" id="refresh" type="button" hidden>Atualizar</button>
+  </header>
+  <main id="app"><div class="skeleton"></div></main>
+  <footer class="note" id="footnote" hidden>
+    Desligar um fluxo ou pausar uma mensagem impede que novas mensagens entrem na fila. As que já estavam agendadas continuam saindo com o texto da hora do agendamento.
+  </footer>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var SUPABASE_URL = "https://xxmrdadnchxdsfinvzsp.supabase.co";
+  var SUPABASE_KEY = "sb_publishable_O7vwUIvc4WqftJEQykVXcw_zmlCkcwF"; // chave pública: o acesso é controlado pelas funções do banco
+
+  var FLOWS = [
+    { key: "poscompra", group: "posvenda", moment: "Depois da compra", title: "Parabéns e Indique e Ganhe",
+      desc: "Mensagem de boas-vindas e a arte do Indique e Ganhe, 24h após a venda." },
+    { key: "retirada", group: "posvenda", moment: "Óculos pronto e não retirado", title: "Lembrete de retirada",
+      desc: "Lembrete para quem recebeu o aviso de óculos pronto e ainda não buscou após 14 dias." },
+    { key: "jornada", group: "jornada", moment: "Depois da entrega", title: "Acompanhamento pós-entrega",
+      desc: "Adaptação, indicação, manutenção, segundo par e renovação do exame, ao longo de um ano." }
+  ];
+  var MSG_NAMES = {
+    parabens: ["Parabéns pela compra", "24h após a compra"],
+    indique_ganhe: ["Indique e Ganhe com arte", "Logo depois do parabéns"],
+    lembrete_retirada: ["Lembrete de retirada", "14 dias após o aviso de pronto"],
+    d15: ["Adaptação às lentes", "15 dias após a entrega"],
+    d30: ["Indique e Ganhe", "30 dias após a entrega"],
+    d90: ["Manutenção gratuita", "3 meses após a entrega"],
+    d180: ["Segundo par", "6 meses após a entrega"],
+    d365: ["Renovação do exame", "1 ano após a entrega"]
+  };
+  var VARS = {
+    poscompra: ["{nome}", "{loja}", "{os}", "{data_compra}"],
+    retirada: ["{nome}", "{loja}", "{os}"],
+    jornada: ["{nome}", "{loja}", "{os}"]
+  };
+  var LOJAS = [["sorocaba", "Sorocaba"], ["campinas", "Campinas"], ["saovicente", "São Vicente"], ["piracicaba", "Piracicaba"]];
+  var MAX = 4000;
+
+  var sb = null;
+  var state = { user: null, data: null, open: {}, confirming: null, busy: {}, flowErr: {}, editing: {}, drafts: {}, testing: {} };
+  var app = document.getElementById("app");
+
+  // ---------- utilidades ----------
+  function el(tag, attrs, children) {
+    var n = document.createElement(tag);
+    if (attrs) for (var k in attrs) {
+      var v = attrs[k];
+      if (k === "class") n.className = v;
+      else if (k === "text") n.textContent = v;
+      else if (k === "value") n.value = v;
+      else if (k.indexOf("on") === 0) n.addEventListener(k.slice(2), v);
+      else if (v !== null && v !== undefined && v !== false) n.setAttribute(k, v);
+    }
+    (children || []).forEach(function (c) { if (c) n.appendChild(typeof c === "string" ? document.createTextNode(c) : c); });
+    return n;
+  }
+  function whatsappText(text) {
+    var frag = document.createDocumentFragment();
+    String(text || "").split(/(\*[^*\n]+\*)/g).forEach(function (p) {
+      if (/^\*[^*\n]+\*$/.test(p)) frag.appendChild(el("strong", { text: p.slice(1, -1) }));
+      else if (p) frag.appendChild(document.createTextNode(p));
+    });
+    return frag;
+  }
+  var toastTimer;
+  function toast(msg) {
+    var t = document.getElementById("toast");
+    t.textContent = msg; t.classList.add("show");
+    clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.classList.remove("show"); }, 2800);
+  }
+  function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (_) { return null; } }
+
+  function errText(error) {
+    var m = (error && (error.message || error.error_description)) || "";
+    if (/sem_permissao/.test(m)) return "Seu usuário ainda não tem acesso ao painel. Peça para liberarem o seu e-mail.";
+    if (/texto_invalido/.test(m)) return "O texto não pode ficar vazio nem passar de 4.000 caracteres.";
+    if (/telefone_invalido/.test(m)) return "Informe um celular com DDD, por exemplo (13) 98225-7862.";
+    if (/Invalid login credentials/i.test(m)) return "E-mail ou senha incorretos.";
+    if (/Email not confirmed/i.test(m)) return "Este e-mail ainda não foi confirmado.";
+    if (/JWT|expired|session/i.test(m)) return "Sua sessão expirou. Entre de novo.";
+    if (/Failed to fetch|NetworkError|network/i.test(m)) return "Sem conexão com o servidor. Confira a internet e tente de novo.";
+    return m || "Não foi possível concluir. Tente de novo.";
+  }
+  function rpc(fn, args) {
+    return sb.rpc(fn, args || {}).then(function (res) {
+      if (res.error) {
+        if (/JWT|expired/i.test(res.error.message || "")) { sb.auth.signOut(); }
+        throw res.error;
+      }
+      return res.data;
+    });
+  }
+
+  // ---------- login ----------
+  function renderLogin(msg) {
+    document.getElementById("refresh").hidden = true;
+    document.getElementById("footnote").hidden = true;
+    document.getElementById("updated").textContent = "";
+    app.textContent = "";
+    var email = el("input", { id: "email", type: "email", autocomplete: "username", required: "required", value: store("painel_email") || "" });
+    var pass = el("input", { id: "senha", type: "password", autocomplete: "current-password", required: "required" });
+    var err = el("p", { class: "inline-err", role: "alert", text: msg || "" });
+    var btn = el("button", { class: "btn primary", type: "submit", text: "Entrar" });
+    var form = el("form", { class: "login", novalidate: "novalidate", onsubmit: function (e) {
+      e.preventDefault();
+      if (!email.value || !pass.value) { err.textContent = "Preencha e-mail e senha."; return; }
+      btn.disabled = true; btn.textContent = "Entrando"; err.textContent = "";
+      sb.auth.signInWithPassword({ email: email.value.trim(), password: pass.value }).then(function (res) {
+        if (res.error) throw res.error;
+        store("painel_email", email.value.trim());
+      }).catch(function (e2) {
+        err.textContent = errText(e2); btn.disabled = false; btn.textContent = "Entrar";
+        pass.setAttribute("aria-invalid", "true");
+      });
+    }}, [
+      el("div", { class: "field" }, [el("label", { for: "email", text: "E-mail" }), email]),
+      el("div", { class: "field" }, [el("label", { for: "senha", text: "Senha" }), pass]),
+      btn, err
+    ]);
+    app.appendChild(form);
+    (email.value ? pass : email).focus();
+  }
+
+  // ---------- dados ----------
+  function load() {
+    var btn = document.getElementById("refresh");
+    btn.hidden = false; btn.disabled = true; btn.textContent = "Atualizando";
+    return rpc("painel_dados").then(function (d) {
+      state.data = d; state.flowErr = {};
+      document.getElementById("updated").textContent = "Atualizado às " +
+        new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+      document.getElementById("footnote").hidden = false;
+      render();
+    }).catch(function (e) {
+      if (state.data) { toast(errText(e)); render(); }
+      else renderError(errText(e));
+    }).then(function () { btn.disabled = false; btn.textContent = "Atualizar"; });
+  }
+
+  function setFlow(flow, on) {
+    state.busy["f:" + flow.key] = true; state.confirming = null; state.flowErr[flow.key] = null; render();
+    rpc("painel_set_fluxo", { p_fluxo: flow.key, p_ativo: on }).then(function (v) {
+      state.data.config[flow.key] = v === true;
+      toast(flow.title + (v ? " ligado" : " desligado"));
+    }).catch(function (e) {
+      state.flowErr[flow.key] = errText(e);
+      return load();
+    }).then(function () { delete state.busy["f:" + flow.key]; render(); });
+  }
+
+  function saveMsg(flow, m, patch, doneMsg) {
+    var id = flow.group + ":" + m.chave;
+    state.busy[id] = true; render();
+    return rpc("painel_set_mensagem", {
+      p_grupo: flow.group, p_chave: m.chave,
+      p_ativo: patch.ativo === undefined ? null : patch.ativo,
+      p_texto: patch.texto === undefined ? null : patch.texto
+    }).then(function (r) {
+      m.ativo = r.ativo; m.texto = r.texto;
+      if (patch.texto !== undefined) { delete state.editing[id]; delete state.drafts[id]; }
+      toast(doneMsg(r));
+    }).catch(function (e) {
+      toast(errText(e));
+    }).then(function () { delete state.busy[id]; render(); });
+  }
+
+  function sendTest(flow, phone, loja, errEl, btn) {
+    btn.disabled = true; btn.textContent = "Enviando";
+    rpc("painel_testar", { p_fluxo: flow.key, p_telefone: phone, p_unidade: loja }).then(function (n) {
+      store("painel_tel", phone); store("painel_loja", loja);
+      toast(n === 1 ? "Teste na fila. Chega em até 2 minutos" : n + " mensagens de teste na fila. Chegam em poucos minutos");
+      errEl.textContent = "";
+    }).catch(function (e) { errEl.textContent = errText(e); })
+      .then(function () { btn.disabled = false; btn.textContent = "Enviar teste"; });
+  }
+
+  // ---------- renderização ----------
+  function switchEl(on, label, busy, onToggle, small) {
+    return el("button", { class: "switch" + (small ? " small" : "") + (busy ? " busy" : ""), type: "button", role: "switch",
+      "aria-checked": on ? "true" : "false", "aria-label": label, disabled: busy ? "disabled" : null, onclick: onToggle });
+  }
+  function msgsFor(flow) {
+    var d = state.data;
+    if (flow.key === "jornada") return d.jornada || [];
+    return (d.posvenda || []).filter(function (m) { return m.fluxo === flow.key; });
+  }
+
+  function renderMsg(flow, m) {
+    var id = flow.group + ":" + m.chave;
+    var names = MSG_NAMES[m.chave] || [m.chave, m.dias ? m.dias + " dias após a entrega" : ""];
+    var busy = !!state.busy[id];
+    var editing = !!state.editing[id];
+    var body;
+
+    if (editing) {
+      var draft = state.drafts[id] !== undefined ? state.drafts[id] : m.texto;
+      var ta = el("textarea", { "aria-label": "Texto de " + names[0], value: draft, oninput: function () {
+        state.drafts[id] = ta.value; count.textContent = ta.value.length + " de " + MAX;
+        count.className = "count" + (ta.value.length > MAX ? " over" : "");
+      }});
+      var count = el("span", { class: "count" + (draft.length > MAX ? " over" : ""), text: draft.length + " de " + MAX });
+      var chips = el("div", { class: "chips" }, VARS[flow.key].map(function (v) {
+        return el("button", { class: "chip", type: "button", text: v, title: "Inserir " + v, onclick: function () {
+          var s = ta.selectionStart || ta.value.length, e = ta.selectionEnd || ta.value.length;
+          ta.value = ta.value.slice(0, s) + v + ta.value.slice(e);
+          ta.focus(); ta.selectionStart = ta.selectionEnd = s + v.length;
+          ta.dispatchEvent(new Event("input"));
+        }});
+      }));
+      body = el("div", null, [
+        ta,
+        el("div", { class: "editor-bar" }, [chips, count]),
+        el("p", { class: "hint", text: "Use *asteriscos* para negrito no WhatsApp. As variáveis são trocadas pelos dados de cada cliente." }),
+        el("div", { class: "row" }, [
+          el("button", { class: "btn primary", type: "button", disabled: busy ? "disabled" : null, text: busy ? "Salvando" : "Salvar texto",
+            onclick: function () {
+              var t = ta.value;
+              if (!t.trim()) { toast("O texto não pode ficar vazio."); return; }
+              if (t.length > MAX) { toast("O texto passou de 4.000 caracteres."); return; }
+              saveMsg(flow, m, { texto: t }, function () { return "Texto salvo"; });
+            }}),
+          el("button", { class: "btn", type: "button", text: "Cancelar", onclick: function () {
+            delete state.editing[id]; delete state.drafts[id]; render();
+          }})
+        ])
+      ]);
+    } else {
+      var bubble = el("div", { class: "bubble" }); bubble.appendChild(whatsappText(m.texto));
+      body = el("div", null, [
+        bubble,
+        m.imagem ? el("span", { class: "tag", text: "Enviada com a arte do Indique e Ganhe" }) : null,
+        el("div", null, [el("button", { class: "link", type: "button", text: "Editar texto", onclick: function () {
+          state.editing[id] = true; render();
+          var t = app.querySelector('textarea[aria-label="Texto de ' + names[0] + '"]'); if (t) t.focus();
+        }})])
+      ]);
+    }
+
+    return el("li", { class: "msg" + (m.ativo ? "" : " off") }, [
+      el("div", { class: "msg-head" }, [
+        el("div", null, [el("h3", { text: names[0] }), el("p", { class: "when", text: names[1] + (m.ativo ? "" : ". Pausada") })]),
+        switchEl(m.ativo, (m.ativo ? "Pausar " : "Ativar ") + names[0], busy, function () {
+          saveMsg(flow, m, { ativo: !m.ativo }, function (r) { return names[0] + (r.ativo ? " ativada" : " pausada"); });
+        }, true)
+      ]),
+      body
+    ]);
+  }
+
+  function renderTest(flow) {
+    var phone = el("input", { id: "tel-" + flow.key, type: "tel", inputmode: "tel", autocomplete: "tel", value: store("painel_tel") || "", placeholder: "(13) 98225-7862" });
+    var loja = el("select", { id: "loja-" + flow.key }, LOJAS.map(function (l) {
+      var o = el("option", { value: l[0], text: l[1] }); if ((store("painel_loja") || "sorocaba") === l[0]) o.selected = true; return o;
+    }));
+    var err = el("p", { class: "inline-err", role: "alert" });
+    var btn = el("button", { class: "btn", type: "button", text: "Enviar teste", onclick: function () {
+      if (!phone.value.trim()) { err.textContent = "Informe o celular que vai receber o teste."; phone.focus(); return; }
+      sendTest(flow, phone.value.trim(), loja.value, err, btn);
+    }});
+    return el("div", { class: "test" }, [
+      el("p", { class: "hint", text: "Receba as mensagens deste fluxo no seu celular, pelo WhatsApp da loja escolhida." }),
+      el("div", { class: "row" }, [
+        el("div", { class: "field" }, [el("label", { for: "tel-" + flow.key, text: "Celular" }), phone]),
+        el("div", { class: "field" }, [el("label", { for: "loja-" + flow.key, text: "Loja" }), loja]),
+        btn
+      ]),
+      err
+    ]);
+  }
+
+  function renderFlow(flow) {
+    var d = state.data;
+    var on = !!(d.config && d.config[flow.key]);
+    var nums = (d.numeros && d.numeros[flow.key]) || { enviadas_hoje: 0, na_fila: 0, erros: 0 };
+    var busy = !!state.busy["f:" + flow.key];
+    var msgs = msgsFor(flow);
+    var open = !!state.open[flow.key];
+
+    return el("li", { class: "flow" + (on ? " on" : "") }, [
+      el("span", { class: "node", "aria-hidden": "true" }),
+      el("p", { class: "moment", text: flow.moment }),
+      el("section", { class: "panel", "aria-labelledby": "t-" + flow.key }, [
+        el("div", { class: "panel-head" }, [
+          el("div", null, [el("h2", { id: "t-" + flow.key, text: flow.title }), el("p", { class: "desc", text: flow.desc })]),
+          el("div", { class: "switch-wrap" }, [
+            switchEl(on, (on ? "Desligar " : "Ligar ") + flow.title, busy, function () {
+              if (on) setFlow(flow, false); else { state.confirming = flow.key; render(); }
+            }),
+            el("span", { class: "state-label main", text: busy ? "Salvando" : (on ? "Ligado" : "Desligado") })
+          ])
+        ]),
+        el("div", { class: "stats" }, [
+          el("span", { class: "stat" }, [el("b", { text: String(nums.enviadas_hoje) }), " enviadas hoje"]),
+          el("span", { class: "stat" }, [el("b", { text: String(nums.na_fila) }), " na fila"]),
+          nums.erros > 0 ? el("span", { class: "stat alert" }, [el("b", { text: String(nums.erros) }), " com erro"]) : null,
+          flow.key === "jornada" ? el("span", { class: "stat" }, [el("b", { text: String(d.clientes_na_jornada || 0) }), " clientes em acompanhamento"]) : null
+        ]),
+        state.confirming === flow.key ? el("div", { class: "confirm", role: "alert" }, [
+          el("p", { text: "Ao ligar, clientes reais passam a receber essas mensagens pelo WhatsApp da loja. Quer ligar agora?" }),
+          el("div", { class: "row" }, [
+            el("button", { class: "btn warn", type: "button", text: "Ligar agora", onclick: function () { setFlow(flow, true); } }),
+            el("button", { class: "btn", type: "button", text: "Cancelar", onclick: function () { state.confirming = null; render(); } })
+          ])
+        ]) : null,
+        state.flowErr[flow.key] ? el("p", { class: "inline-err", text: state.flowErr[flow.key] }) : null,
+        el("button", { class: "disclosure", type: "button", "aria-expanded": open ? "true" : "false",
+          onclick: function () { state.open[flow.key] = !open; render(); } },
+          [el("span", { class: "chev", "aria-hidden": "true", text: "›" }), open ? "Fechar mensagens" : "Mensagens e teste (" + msgs.length + ")"]),
+        open ? el("ul", { class: "msgs" }, msgs.map(function (m) { return renderMsg(flow, m); })) : null,
+        open ? renderTest(flow) : null
+      ])
+    ]);
+  }
+
+  function render() {
+    if (!state.data) return;
+    var focusLabel = document.activeElement && document.activeElement.getAttribute("aria-label");
+    app.textContent = "";
+    app.appendChild(el("ol", { class: "timeline" }, FLOWS.map(renderFlow)));
+    app.appendChild(el("div", { class: "userline" }, [
+      "Conectado como " + ((state.user && state.user.email) || ""),
+      el("button", { class: "link", type: "button", text: "Sair", onclick: function () { sb.auth.signOut(); } })
+    ]));
+    if (focusLabel) {
+      var again = Array.prototype.find.call(app.querySelectorAll("[aria-label]"), function (n) { return n.getAttribute("aria-label") === focusLabel; });
+      if (again) again.focus();
+    }
+  }
+
+  function renderError(msg) {
+    app.textContent = "";
+    app.appendChild(el("div", { class: "notice err", role: "alert" }, [
+      el("h2", { text: "Não foi possível abrir o painel" }),
+      el("p", { text: msg }),
+      el("div", { class: "row" }, [
+        el("button", { class: "btn primary", type: "button", text: "Tentar de novo", onclick: function () { app.textContent = ""; app.appendChild(el("div", { class: "skeleton" })); load(); } }),
+        el("button", { class: "btn", type: "button", text: "Sair", onclick: function () { sb.auth.signOut(); } })
+      ])
+    ]));
+  }
+
+  document.getElementById("refresh").addEventListener("click", function () { load(); });
+
+  // ---------- início ----------
+  if (!window.supabase || !window.supabase.createClient) {
+    renderError("Não foi possível carregar os componentes do painel. Confira a internet e recarregue a página.");
+    return;
+  }
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: true, autoRefreshToken: true } });
+  sb.auth.onAuthStateChange(function (event, session) {
+    var u = session && session.user;
+    if (!u) { state.user = null; state.data = null; renderLogin(); return; }
+    if (state.user && state.user.id === u.id && state.data) return;
+    state.user = u; app.textContent = ""; app.appendChild(el("div", { class: "skeleton" })); load();
+  });
+})();
+</script>
+</body>
+</html>
