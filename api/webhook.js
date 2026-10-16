@@ -19,8 +19,14 @@
 // não recebe 200, e reenvio só geraria repetição. O que deu errado fica
 // registrado na tabela, não no código de resposta.
 //
+// O banco é gravado por duas funções (enc_registrar / enc_anotar) chamadas
+// com a CHAVE PÚBLICA. As funções rodam como donas da tabela, então gravam
+// sem dar a ninguém acesso direto a ela, e exigem um segredo próprio. Assim
+// nenhuma chave privilegiada do banco precisa morar aqui.
+//
 // Variáveis de ambiente:
-//   SUPABASE_URL, SUPABASE_SERVICE_KEY   banco (papel central_api)
+//   SUPABASE_URL, SUPABASE_ANON_KEY      banco (chave pública, sem privilégio)
+//   ENC_DB_SEGREDO                       senha das funções de gravação
 //   ZAPI_ENC_URL                         https://api.z-api.io/instances/XXX/token/YYY
 //   ZAPI_ENC_CLIENT_TOKEN                Client-Token da conta
 //   ENC_NUMERO_ORIGEM                    só este número é encaminhado
@@ -35,8 +41,8 @@
 // ===========================================================================
 
 const SB_URL  = process.env.SUPABASE_URL;
-const SB_KEY  = process.env.SUPABASE_SERVICE_KEY;
-const SB_ANON = process.env.SUPABASE_ANON_KEY || SB_KEY;
+const SB_ANON = process.env.SUPABASE_ANON_KEY;
+const DB_SEG  = process.env.ENC_DB_SEGREDO;
 const Z_URL   = process.env.ZAPI_ENC_URL;
 const Z_TOKEN = process.env.ZAPI_ENC_CLIENT_TOKEN;
 const ORIGEM  = so_numeros(process.env.ENC_NUMERO_ORIGEM);
@@ -59,37 +65,43 @@ function mesmo_numero(a, b) {
   return x === y || fim(x) === fim(y);
 }
 
-async function sb(caminho, opcoes = {}) {
-  const r = await fetch(SB_URL + '/rest/v1/' + caminho, {
-    ...opcoes,
+async function rpc(funcao, argumentos) {
+  const r = await fetch(SB_URL + '/rest/v1/rpc/' + funcao, {
+    method: 'POST',
     headers: {
       apikey: SB_ANON,
-      Authorization: 'Bearer ' + SB_KEY,
-      'Content-Type': 'application/json',
-      'Accept-Profile': 'central',
-      'Content-Profile': 'central',
-      ...(opcoes.headers || {})
-    }
+      Authorization: 'Bearer ' + SB_ANON,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(argumentos)
   });
   const corpo = await r.text();
-  if (!r.ok) throw new Error('supabase ' + r.status + ' ' + corpo.slice(0, 300));
+  if (!r.ok) throw new Error('banco ' + r.status + ' ' + corpo.slice(0, 300));
   return corpo ? JSON.parse(corpo) : null;
 }
 
-// Grava a mensagem. Volta null quando o id já existia -- ou seja, repetida.
+// Grava a mensagem. Volta false quando o id já existia -- ou seja, repetida.
 async function registrar(linha) {
-  const gravadas = await sb('encaminhamentos', {
-    method: 'POST',
-    body: JSON.stringify(linha),
-    headers: { Prefer: 'resolution=ignore-duplicates,return=representation' }
+  const novo = await rpc('enc_registrar', {
+    p_segredo: DB_SEG,
+    p_msg_id:  linha.msg_id,
+    p_de:      linha.de,
+    p_nome:    linha.nome || null,
+    p_tipo:    linha.tipo || null,
+    p_texto:   linha.texto || null,
+    p_destino: linha.destino || null,
+    p_status:  linha.status || 'pendente',
+    p_motivo:  linha.motivo || null,
+    p_bruto:   linha.bruto || null
   });
-  return (Array.isArray(gravadas) && gravadas.length) ? gravadas[0] : null;
+  return novo === true;
 }
 
-async function anotar(msg_id, campos) {
+async function anotar(msg_id, status, motivo, enviado) {
   try {
-    await sb('encaminhamentos?msg_id=eq.' + encodeURIComponent(msg_id), {
-      method: 'PATCH', body: JSON.stringify(campos)
+    await rpc('enc_anotar', {
+      p_segredo: DB_SEG, p_msg_id: msg_id,
+      p_status: status || null, p_motivo: motivo || null, p_enviado: !!enviado
     });
   } catch (e) { /* o encaminhamento já aconteceu; a anotação é secundária */ }
 }
@@ -177,22 +189,22 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({ ok: true, ignorado: motivo });
   }
 
-  let linha;
+  let novo;
   try {
-    linha = await registrar(base);
+    novo = await registrar(base);
   } catch (e) {
     // o banco falhou: sem a trava de duplicidade é melhor não encaminhar,
     // senão um reenvio da Z-API repete a mensagem no grupo
     return res.status(200).json({ ok: false, erro: 'banco: ' + e.message });
   }
-  if (!linha) return res.status(200).json({ ok: true, ignorado: 'mensagem repetida' });
+  if (!novo) return res.status(200).json({ ok: true, ignorado: 'mensagem repetida' });
 
   try {
     await mandarNoGrupo(texto);
-    await anotar(msg_id, { status: 'enviado', enviado_em: new Date().toISOString() });
+    await anotar(msg_id, 'enviado', null, true);
     return res.status(200).json({ ok: true, enviado: true });
   } catch (e) {
-    await anotar(msg_id, { status: 'erro', motivo: String(e.message).slice(0, 400) });
+    await anotar(msg_id, 'erro', String(e.message).slice(0, 400), false);
     return res.status(200).json({ ok: false, erro: e.message });
   }
 };
