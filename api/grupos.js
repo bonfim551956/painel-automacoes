@@ -57,16 +57,24 @@ module.exports = async function handler(req, res) {
   const grupos = chats.filter(c => c.isGroup);
   const pessoas = chats.filter(c => !c.isGroup);
 
-  // o nome do grupo não vem na lista; pergunta um por um
-  const comNome = [];
-  for (const g of grupos.slice(0, 25)) {
-    let nome = null;
-    try {
-      const m = await zapi('/group-metadata/' + encodeURIComponent(g.phone));
-      nome = (m && (m.subject || m.name)) || null;
-    } catch (e) { nome = '(não foi possível ler: ' + e.message.slice(0, 80) + ')'; }
-    comNome.push({ id: g.phone, nome, ultima_em: hora(g.lastMessageTime) });
-  }
+  // O nome do grupo não vem na lista de conversas; vem de uma consulta por
+  // grupo. São feitas todas de uma vez (e no máximo 12) porque em sequência
+  // isso estourava o tempo da função. Com ?meta=0 nem pergunta o nome.
+  const semNome = String(req.query.meta || '1') === '0';
+  const alvos = grupos
+    .sort((a, b) => Number(b.lastMessageTime || 0) - Number(a.lastMessageTime || 0))
+    .slice(0, Math.min(12, Number(req.query.grupos || 12)));
+
+  const comNome = semNome
+    ? alvos.map(g => ({ id: g.phone, nome: null, ultima_em: hora(g.lastMessageTime) }))
+    : await Promise.all(alvos.map(async g => {
+        let nome = null;
+        try {
+          const m = await zapi('/group-metadata/' + encodeURIComponent(g.phone));
+          nome = (m && (m.subject || m.name)) || null;
+        } catch (e) { nome = '(não deu para ler: ' + String(e.message).slice(0, 60) + ')'; }
+        return { id: g.phone, nome, ultima_em: hora(g.lastMessageTime) };
+      }));
 
   return res.status(200).json({
     total_de_conversas: chats.length,
