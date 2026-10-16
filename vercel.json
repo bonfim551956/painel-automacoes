@@ -1,5 +1,12 @@
 {
   "rewrites": [
-    { "source": "/api/webhook/:t", "destination": "/api/webhook?t=:t" }
+    {
+      "source": "/api/grupos/:t",
+      "destination": "/api/grupos?t=:t"
+    },
+    {
+      "source": "/api/webhook/:t",
+      "destination": "/api/webhook?t=:t"
+    }
   ]
 }
