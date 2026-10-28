@@ -56,7 +56,7 @@ function montar(p) {
   const venda = [os, p.dt_venda ? dataBR(p.dt_venda) : ''].filter(Boolean).join(' · ');
   if (venda) linhas.push('🧾 ' + venda);
   if (limpo(p.motivo, 120)) linhas.push('❓ Motivo: ' + limpo(p.motivo, 120));
-  linhas.push('', 'Confirme ou descarte no sistema:', 'agenda.clinicavisaoideal.com → Agenda / Pendente');
+  linhas.push('', 'Confirme ou descarte no sistema:', 'agenda.clinicavisaoideal.com → Conversão');
   return linhas.join('\n');
 }
 
