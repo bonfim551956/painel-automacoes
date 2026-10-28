@@ -82,8 +82,8 @@ grupo do Marketing, pelo mesmo número do encaminhador.
 
 - O texto é montado aqui a partir dos campos (paciente, unidade, OS, tipo, data,
   motivo). Quem chama não manda texto livre. **Valor da venda não vai.**
-- `tipo: "novo"` → "⚠️ VENDA PARA CONFERIR — AGENDA".
-  `tipo: "lembrete"` → "⏰ VENDA AINDA CONTINUA PENDENTE — AGENDA" (a cada 24 h
+- `tipo: "novo"` → "VENDA PARA CONFERIR — AGENDA".
+  `tipo: "lembrete"` → "VENDA AINDA CONTINUA PENDENTE — AGENDA" (a cada 24 h
   enquanto continuar pendente).
 - Quem decide quando mandar é o banco da clínica: função
   `public.agenda_alertar_pendentes()` + cron `agenda-alerta-pendentes`

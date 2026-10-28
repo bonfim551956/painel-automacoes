@@ -12,7 +12,7 @@
 // O texto é montado AQUI, a partir dos campos -- quem chama não manda texto
 // livre. Assim, mesmo que o segredo vaze, só dá para postar um aviso no
 // formato da Agenda, nunca uma mensagem qualquer no grupo.
-// Valor da venda não vai na mensagem (decisão do Diego, 28/10/2026).
+// Valor da venda não vai na mensagem e a mensagem não leva emojis (decisões do Diego, 28/10/2026).
 //
 // Variáveis: ZAPI_ENC_URL, ZAPI_ENC_CLIENT_TOKEN, ENC_GRUPO_DESTINO (as mesmas
 // do encaminhador) e ALERTA_SEGREDO.
@@ -39,23 +39,34 @@ function dataBR(v) {
   return m ? m[3] + '/' + m[2] + '/' + m[1] : limpo(v, 10);
 }
 
+// O sistema grava o motivo como código; aqui vira frase.
+const MOTIVOS = {
+  NOME_IGUAL_TELEFONE_DIFERENTE: 'nome igual, telefone diferente',
+  TELEFONE_IGUAL_NOME_DIFERENTE: 'telefone igual, nome diferente'
+};
+function motivoTexto(v) {
+  const k = String(v || '').trim().toUpperCase();
+  if (!k) return '';
+  return MOTIVOS[k] || limpo(k.replace(/_/g, ' ').toLowerCase(), 120);
+}
+
 function montar(p) {
   const lembrete = p.tipo === 'lembrete';
   const dias = Math.max(1, Math.min(60, parseInt(p.dias, 10) || 1));
   const os = [limpo(p.os_numero, 20) && 'OS ' + limpo(p.os_numero, 20),
               limpo(p.os_tipo, 30) && '(' + limpo(p.os_tipo, 30) + ')'].filter(Boolean).join(' ');
   const linhas = [
-    lembrete ? '⏰ *VENDA AINDA CONTINUA PENDENTE — AGENDA*' : '⚠️ *VENDA PARA CONFERIR — AGENDA*',
+    lembrete ? '*VENDA AINDA CONTINUA PENDENTE — AGENDA*' : '*VENDA PARA CONFERIR — AGENDA*',
     ''
   ];
   if (lembrete) {
     linhas.push('Aguardando conferência há ' + dias + (dias === 1 ? ' dia.' : ' dias.'), '');
   }
-  linhas.push('👤 Paciente: ' + (limpo(p.paciente) || '—'));
-  linhas.push('🏬 Unidade: ' + (limpo(p.unidade, 30) || '—'));
+  linhas.push('Paciente: ' + (limpo(p.paciente) || '—'));
+  linhas.push('Unidade: ' + (limpo(p.unidade, 30) || '—'));
   const venda = [os, p.dt_venda ? dataBR(p.dt_venda) : ''].filter(Boolean).join(' · ');
-  if (venda) linhas.push('🧾 ' + venda);
-  if (limpo(p.motivo, 120)) linhas.push('❓ Motivo: ' + limpo(p.motivo, 120));
+  if (venda) linhas.push('Venda: ' + venda);
+  if (motivoTexto(p.motivo)) linhas.push('Motivo: ' + motivoTexto(p.motivo));
   linhas.push('', 'Confirme ou descarte no sistema:', 'agenda.clinicavisaoideal.com → Conversão');
   return linhas.join('\n');
 }
