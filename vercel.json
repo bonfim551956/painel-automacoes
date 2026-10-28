@@ -7,6 +7,10 @@
     {
       "source": "/api/webhook/:t",
       "destination": "/api/webhook?t=:t"
+    },
+    {
+      "source": "/api/alerta/:t",
+      "destination": "/api/alerta?t=:t"
     }
   ]
 }

@@ -70,3 +70,25 @@ Conferir o que chegou:
 select recebido_em, de, nome, status, motivo, texto
 from central.encaminhamentos order by recebido_em desc limit 20;
 ```
+
+---
+
+## Alerta da Agenda no grupo do Marketing (`/api/alerta`)
+
+Quando o sistema da Clínica Visão Ideal acha no ADM uma venda que precisa de
+conferência manual (paciente fica **Pendente**), o banco da clínica (Supabase
+PDV) chama `POST /api/alerta/<ALERTA_SEGREDO>` e este endpoint posta um aviso no
+grupo do Marketing, pelo mesmo número do encaminhador.
+
+- O texto é montado aqui a partir dos campos (paciente, unidade, OS, tipo, data,
+  motivo). Quem chama não manda texto livre. **Valor da venda não vai.**
+- `tipo: "novo"` → "⚠️ VENDA PARA CONFERIR — AGENDA".
+  `tipo: "lembrete"` → "⏰ VENDA AINDA CONTINUA PENDENTE — AGENDA" (a cada 24 h
+  enquanto continuar pendente).
+- Quem decide quando mandar é o banco da clínica: função
+  `public.agenda_alertar_pendentes()` + cron `agenda-alerta-pendentes`
+  (só entre 8h e 20h). Histórico em `public.vendas_alertas`.
+
+Variável nova: `ALERTA_SEGREDO` (a mesma fica guardada no Vault do banco da
+clínica como `alerta_marketing_segredo`). Usa também `ZAPI_ENC_URL`,
+`ZAPI_ENC_CLIENT_TOKEN` e `ENC_GRUPO_DESTINO`.
