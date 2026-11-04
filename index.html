@@ -664,12 +664,73 @@
     return;
   }
   sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: true, autoRefreshToken: true } });
+
+  // ---------- entrada pelo Central Idealize (login único) ----------
+  // Dentro do Central, o painel pede o token da sessão do Central, troca por um código de uso único
+  // (função entrar-central) e abre a sessão da pessoa certa. Fora do Central, nada muda.
+  var ORIGENS_CENTRAL = ["https://central.oticasidealize.online", "https://central-idealize.vercel.app"];
+  var embutido = (function () { try { return window.self !== window.top; } catch (_) { return true; } })();
+  var deCentral = function (e) { return ORIGENS_CENTRAL.indexOf(e.origin) >= 0 && e.source === window.parent; };
+  var entrandoCentral = embutido, erroCentral = ""; // dentro do Central, não mostra o login enquanto tenta entrar
+  function pedirTokenCentral(ms) {
+    return new Promise(function (resolve) {
+      var t;
+      function ouvir(e) {
+        if (!deCentral(e) || !e.data || e.data.tipo !== "central:token" || typeof e.data.token !== "string") return;
+        fim(e.data.token);
+      }
+      function fim(v) { window.removeEventListener("message", ouvir); clearTimeout(t); resolve(v); }
+      t = setTimeout(function () { fim(null); }, ms);
+      window.addEventListener("message", ouvir);
+      window.parent.postMessage({ tipo: "central:pronto", sistema: "automacoes" }, "*");
+    });
+  }
+  function entrarPeloCentral() {
+    entrandoCentral = true;
+    app.textContent = ""; app.appendChild(el("div", { class: "skeleton" }));
+    return pedirTokenCentral(6000).then(function (token) {
+      if (!token) return;
+      return sb.functions.invoke("entrar-central", { body: { sistema: "automacoes", token: token } }).then(function (res) {
+        if (res.error) {
+          var ctx = res.error.context;
+          return (ctx && ctx.json ? ctx.json() : Promise.resolve({})).catch(function () { return {}; }).then(function (j) {
+            throw new Error((j && j.erro) || "Não foi possível entrar pelo Central.");
+          });
+        }
+        if (!res.data || !res.data.token_hash) throw new Error("Não foi possível entrar pelo Central.");
+        return sb.auth.verifyOtp({ token_hash: res.data.token_hash, type: "email" }).then(function (r) {
+          if (r.error) return sb.auth.verifyOtp({ token_hash: res.data.token_hash, type: "magiclink" });
+          return r;
+        }).then(function (r) { if (r.error) throw new Error("Não foi possível abrir a sessão pelo Central."); });
+      });
+    }).catch(function (e) { erroCentral = e.message; }).then(function () {
+      entrandoCentral = false;
+      return sb.auth.getSession().then(function (r) { if (!(r.data && r.data.session)) renderLogin(erroCentral); });
+    });
+  }
+  if (embutido) {
+    // o Central avisa quando a pessoa sai: encerra a sessão só neste aparelho
+    window.addEventListener("message", function (e) { if (deCentral(e) && e.data && e.data.tipo === "central:sair") sb.auth.signOut({ scope: "local" }); });
+    // uso do painel conta como atividade no Central (o Central encerra após 20 min sem uso)
+    var ultimoAviso = 0;
+    ["mousedown", "keydown", "touchstart", "scroll"].forEach(function (ev) {
+      window.addEventListener(ev, function () {
+        var t = Date.now();
+        if (t - ultimoAviso > 30000) { ultimoAviso = t; window.parent.postMessage({ tipo: "central:atividade" }, "*"); }
+      }, { passive: true });
+    });
+  }
+
   sb.auth.onAuthStateChange(function (event, session) {
     var u = session && session.user;
-    if (!u) { state.user = null; state.data = null; renderLogin(); return; }
+    if (!u) { state.user = null; state.data = null; if (!entrandoCentral) renderLogin(); return; }
     if (state.user && state.user.id === u.id && state.data) return;
     state.user = u; app.textContent = ""; app.appendChild(el("div", { class: "skeleton" })); load();
   });
+  if (embutido) {
+    // já com sessão do painel neste aparelho: segue nela; sem sessão: entra pelo Central
+    sb.auth.getSession().then(function (r) { if (r.data && r.data.session) entrandoCentral = false; else entrarPeloCentral(); });
+  }
 })();
 </script>
 </body>
