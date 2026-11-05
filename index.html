@@ -215,6 +215,81 @@
   .store b { display: block; font-size: 16px; }
   .store small { font-size: 12px; color: var(--muted); }
   .store small.warn { color: var(--orange); }
+  .wrap.wide { max-width: 1120px; }
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin: -8px 0 24px; overflow-x: auto; }
+  .tabbtn { background: none; border: none; border-bottom: 2px solid transparent; padding: 12px 16px; font-size: 14px; font-weight: 600; color: var(--muted); cursor: pointer; white-space: nowrap; }
+  .tabbtn:hover { color: var(--text); }
+  .tabbtn[aria-selected="true"] { color: var(--teal); border-bottom-color: var(--teal); }
+  .chips2 { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .chip2 { font-size: 12px; font-weight: 600; padding: 4px 12px; min-height: 32px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); cursor: pointer; }
+  .chip2:hover { border-color: var(--teal); }
+  .chip2[aria-pressed="true"] { background: var(--teal); border-color: var(--teal); color: var(--on-teal); }
+  .filters { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 16px; }
+  .filters .field { margin: 0; flex: 1 1 150px; }
+  .filters .field.grow { flex: 2 1 220px; }
+  .filters .field input, .filters .field select { min-height: 40px; padding: 8px 12px; font-size: 14px; }
+  .kpis { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px; }
+  .kpi { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 16px; }
+  .kpi small { display: block; font-size: 12px; font-weight: 600; color: var(--muted); }
+  .kpi b { display: block; font-size: 24px; line-height: 1.2; margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .kpi.alert b { color: var(--orange); }
+  .cards2 { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 16px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 16px; }
+  .card h3 { font-size: 16px; line-height: 1.2; margin: 0 0 12px; }
+  .hbar { display: grid; grid-template-columns: minmax(96px, 150px) 1fr 48px; gap: 8px; align-items: center; margin-bottom: 8px; font-size: 12px; }
+  .hbar i { display: block; height: 12px; border-radius: 4px; background: var(--teal); min-width: 2px; }
+  .hbar span:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+  .tablewrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); }
+  table.data { width: 100%; border-collapse: collapse; min-width: 720px; font-size: 14px; }
+  table.data th { text-align: left; font-size: 12px; color: var(--muted); padding: 12px; border-bottom: 1px solid var(--line); background: var(--bg); position: sticky; top: 0; }
+  table.data td { padding: 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table.data tr:last-child td { border-bottom: none; }
+  table.data tbody tr.click { cursor: pointer; }
+  table.data tbody tr.click:hover td { background: var(--teal-tint); }
+  .num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .sub { display: block; font-size: 12px; color: var(--muted); }
+  .st { display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+  .st.enviado { background: var(--teal-tint); color: var(--teal); }
+  .st.pendente { background: var(--bg); color: var(--muted); border: 1px solid var(--line); }
+  .st.cancelado, .st.erro { background: var(--orange-tint); color: var(--orange); }
+  .prev { color: var(--muted); max-width: 320px; }
+  .empty { padding: 32px 16px; text-align: center; color: var(--muted); }
+  .more { display: flex; justify-content: center; padding: 16px; }
+  .diff { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  .diff div { border-radius: var(--radius-sm); padding: 8px; font-size: 12px; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 200px; overflow: auto; }
+  .diff .old { background: var(--orange-tint); }
+  .diff .new { background: var(--teal-tint); }
+  .diff b { display: block; margin-bottom: 4px; }
+  .modal-bg { position: fixed; inset: 0; background: rgba(15,15,15,.45); display: flex; justify-content: flex-end; z-index: 20; }
+  .modal { background: var(--surface); width: min(480px, 100%); height: 100%; overflow-y: auto; padding: 24px 16px calc(24px + env(safe-area-inset-bottom, 0px)); box-shadow: -8px 0 24px rgba(15,15,15,.2); }
+  .modal-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+  .modal h2 { font-size: 20px; line-height: 1.2; margin: 0; }
+  .tl { list-style: none; margin: 16px 0 0; padding: 0 0 0 16px; border-left: 2px solid var(--line); }
+  .tl li { position: relative; padding-bottom: 16px; font-size: 14px; }
+  .tl li::before { content: ""; position: absolute; left: -23px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--teal); }
+  .tl li.bad::before { background: var(--orange); }
+  .tl li.wait::before { background: var(--line); }
+  .kv { display: grid; grid-template-columns: 120px 1fr; gap: 4px 12px; font-size: 14px; margin-top: 12px; }
+  .kv dt { color: var(--muted); }
+  .kv dd { margin: 0; overflow-wrap: anywhere; }
+  .banner { background: var(--orange-tint); border: 1px solid var(--orange); border-radius: 12px; padding: 12px 16px; margin: 0 0 12px; font-size: 14px; }
+  .banner b { color: var(--orange); }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--teal); margin-right: 6px; vertical-align: 1px; }
+  .dot.off { background: var(--orange); }
+  .dot.unk { background: var(--line); }
+  .alertcfg { margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--line); font-size: 14px; }
+  .alertcfg .row { align-items: flex-end; }
+  .alertcfg .field { margin: 0; flex: 1 1 160px; }
+  .health { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  .health .kpi b { font-size: 16px; color: var(--teal); }
+  .health .kpi.alert b { color: var(--orange); }
+  @media (min-width: 720px) {
+    .kpis { grid-template-columns: repeat(5, 1fr); }
+    .cards2 { grid-template-columns: 1fr 1fr; }
+    .diff { grid-template-columns: 1fr 1fr; }
+    .health { grid-template-columns: repeat(3, 1fr); }
+    .modal { padding: 24px; }
+  }
   .gap { font-size: 12px; color: var(--muted); margin: 8px 0 0; }
   .userline { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); margin-top: 8px; }
 </style>
@@ -273,7 +348,9 @@
   var MAX = 4000;
 
   var sb = null;
-  var state = { user: null, data: null, open: {}, confirming: null, busy: {}, flowErr: {}, editing: {}, drafts: {}, testing: {}, credForm: {} };
+  var state = { user: null, data: null, open: {}, confirming: null, busy: {}, flowErr: {}, editing: {}, drafts: {}, testing: {}, credForm: {}, tab: "fluxos",
+    rel: { preset: "hoje", ini: null, fim: null, loja: "", fluxo: "", mensagem: "", status: "", busca: "", data: null, linhas: [], loading: false, err: null, detalhe: null, exporting: false },
+    aud: { dias: 30, autor: "", acao: "", data: null, saude: null, loading: false, err: null }, alertForm: false };
   var app = document.getElementById("app");
 
   // ---------- utilidades ----------
@@ -314,6 +391,9 @@
     if (/token_igual_instancia/.test(m)) return "O token ficou igual ao ID da instância. Na Z-API, o token é o campo logo abaixo do ID.";
     if (/instancia_invalida/.test(m)) return "ID da instância inválido. Copie só letras e números, sem espaços.";
     if (/token_invalido/.test(m)) return "Token inválido. Copie só letras e números, sem espaços.";
+    if (/periodo_invalido/.test(m)) return "Período inválido. A data final precisa ser depois da inicial e o período pode ter até 400 dias.";
+    if (/minutos_invalidos/.test(m)) return "Escolha um tempo entre 5 e 120 minutos.";
+    if (/envio_nao_encontrado/.test(m)) return "Essa mensagem não foi encontrada.";
     if (/Invalid login credentials/i.test(m)) return "E-mail ou senha incorretos.";
     if (/Email not confirmed/i.test(m)) return "Este e-mail ainda não foi confirmado.";
     if (/JWT|expired|session/i.test(m)) return "Sua sessão expirou. Entre de novo.";
@@ -429,18 +509,25 @@
 
   function renderStores() {
     var d = state.data, ativas = d.lojas_ativas || [], creds = d.credenciais || [];
+    var offline = LOJAS.filter(function (l) { var c = (d.conexoes || {})[l[0]]; return c && c.conectado === false && ativas.indexOf(l[0]) !== -1; });
     return el("section", { class: "stores", "aria-labelledby": "t-lojas" }, [
       el("h2", { id: "t-lojas", text: "Lojas participantes" }),
-      el("p", { text: "Só clientes das lojas ligadas recebem as mensagens. Os testes funcionam em qualquer loja." })
-    ].concat(LOJAS.map(function (l) {
+      el("p", { text: "Só clientes das lojas ligadas recebem as mensagens. O WhatsApp de cada loja é verificado a cada minuto." })
+    ].concat(offline.map(function (l) {
+      var c = d.conexoes[l[0]];
+      return el("div", { class: "banner", role: "alert" }, [el("b", { text: l[1] + " desconectada desde " + hhmm(c.offline_desde || c.checado_em) + ". " }),
+        "Os envios dessa loja estão pausados e ficam guardados na fila. Reconecte escaneando o QR Code da instância na Z-API."]);
+    })).concat(LOJAS.map(function (l) {
       var on = ativas.indexOf(l[0]) !== -1, busy = !!state.busy["l:" + l[0]], hasCred = creds.indexOf(l[0]) !== -1;
       var confirming = state.confirming === "loja:" + l[0];
+      var cx = (d.conexoes || {})[l[0]];
+      var statusEl;
+      if (!hasCred) statusEl = el("small", { class: "warn", text: "WhatsApp da loja ainda não cadastrado" + (on ? ": mensagens ficam aguardando" : "") });
+      else if (cx && cx.conectado === false) statusEl = el("small", { class: "warn" }, [el("span", { class: "dot off", "aria-hidden": "true" }), "Desconectado há " + ago(cx.offline_desde || cx.checado_em) + (on ? " · envios pausados" : "")]);
+      else if (cx && cx.conectado) statusEl = el("small", null, [el("span", { class: "dot", "aria-hidden": "true" }), "Conectado · verificado há " + ago(cx.checado_em) + (on ? "" : " · loja desligada")]);
+      else statusEl = el("small", null, [el("span", { class: "dot unk", "aria-hidden": "true" }), on ? "Aguardando a primeira verificação" : "Desligada"]);
       var row = el("div", { class: "store" }, [
-        el("div", null, [
-          el("b", { text: l[1] }),
-          el("small", { class: hasCred ? "" : "warn", text: hasCred ? (on ? "Enviando pelo WhatsApp da loja" : "Desligada") :
-            "WhatsApp da loja ainda não cadastrado" + (on ? ": mensagens ficam aguardando" : "") })
-        ]),
+        el("div", null, [el("b", { text: l[1] }), statusEl]),
         switchEl(on, (on ? "Desligar " : "Ligar ") + l[1], busy, function () {
           if (on) setLoja(l, false); else { state.confirming = "loja:" + l[0]; render(); }
         })
@@ -457,7 +544,44 @@
           el("button", { class: "btn", type: "button", text: "Cancelar", onclick: function () { state.confirming = null; render(); } })
         ])
       ])]);
-    })));
+    })).concat([renderAlertCfg()]));
+  }
+
+  function renderAlertCfg() {
+    var a = state.data.alerta || {}, cx = (state.data.conexoes || {}).alerta;
+    var line = el("p", { class: "hint" }, [
+      "Se o WhatsApp de uma loja ficar fora do ar por " + (a.minutos || 10) + " minutos, um aviso vai para " + (a.mascara || "nenhum número") + ". ",
+      cx ? (cx.conectado ? "O número que envia os avisos está conectado." : "Atenção: o número que envia os avisos está desconectado; os avisos sairão pelo WhatsApp de uma loja.") : ""
+    ]);
+    var kids = [el("h3", { style: "font-size:16px;margin:0 0 4px", text: "Alertas de conexão" }), line];
+    if (state.alertForm) {
+      var tel = el("input", { id: "alerta-tel", type: "tel", inputmode: "tel", autocomplete: "tel", placeholder: "(13) 98225-7862" });
+      var min = el("select", { id: "alerta-min" }, [5, 10, 15, 30, 60].map(function (m) { var o = el("option", { value: String(m), text: m + " minutos" }); if (m === (a.minutos || 10)) o.selected = true; return o; }));
+      var err = el("p", { class: "inline-err", role: "alert" });
+      var save = el("button", { class: "btn primary", type: "button", text: "Salvar", onclick: function () {
+        if (!tel.value.trim()) { err.textContent = "Informe o celular que vai receber os avisos."; tel.focus(); return; }
+        save.disabled = true; save.textContent = "Salvando";
+        rpc("painel_set_alerta", { p_telefone: tel.value.trim(), p_minutos: parseInt(min.value, 10) }).then(function () {
+          state.alertForm = false; toast("Número de alerta salvo"); return load();
+        }).catch(function (e) { err.textContent = errText(e); save.disabled = false; save.textContent = "Salvar"; });
+      }});
+      kids.push(el("div", { class: "row" }, [
+        el("div", { class: "field" }, [el("label", { for: "alerta-tel", text: "Celular que recebe os avisos" }), tel]),
+        el("div", { class: "field" }, [el("label", { for: "alerta-min", text: "Avisar depois de" }), min]),
+        save, el("button", { class: "btn", type: "button", text: "Cancelar", onclick: function () { state.alertForm = false; render(); } })
+      ]), err);
+    } else {
+      var tbtn = el("button", { class: "btn", type: "button", text: "Enviar alerta de teste", onclick: function () {
+        tbtn.disabled = true; tbtn.textContent = "Enviando";
+        rpc("painel_testar_alerta").then(function (ok) { toast(ok ? "Alerta de teste na fila. Chega em até 1 minuto" : "Nenhum número conectado para enviar o alerta"); })
+          .catch(function (e) { toast(errText(e)); }).then(function () { tbtn.disabled = false; tbtn.textContent = "Enviar alerta de teste"; });
+      }});
+      kids.push(el("div", { class: "row" }, [
+        el("button", { class: "btn", type: "button", text: "Alterar número", onclick: function () { state.alertForm = true; render(); var f = document.getElementById("alerta-tel"); if (f) f.focus(); } }),
+        tbtn
+      ]));
+    }
+    return el("div", { class: "alertcfg" }, kids);
   }
 
   function saveMsg(flow, m, patch, doneMsg) {
@@ -628,12 +752,289 @@
     ]);
   }
 
+  // ================== utilidades de data ==================
+  var TZ = "America/Sao_Paulo";
+  function hoje() { return new Date().toLocaleDateString("en-CA", { timeZone: TZ }); }
+  function addDias(iso, n) { var d = new Date(iso + "T12:00:00Z"); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); }
+  function fmt(ts, o) { if (!ts) return ""; return new Date(ts).toLocaleString("pt-BR", Object.assign({ timeZone: TZ }, o)); }
+  function hhmm(ts) { return fmt(ts, { hour: "2-digit", minute: "2-digit" }); }
+  function ddhh(ts) { return fmt(ts, { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }); }
+  function ago(ts) {
+    if (!ts) return "pouco";
+    var m = Math.max(0, Math.round((Date.now() - new Date(ts).getTime()) / 60000));
+    if (m < 1) return "menos de 1 min"; if (m < 60) return m + " min";
+    var h = Math.floor(m / 60); if (h < 24) return h + " h" + (m % 60 ? " " + (m % 60) + " min" : "");
+    return Math.floor(h / 24) + " dia(s)";
+  }
+  var LOJA_NOME = { sorocaba: "Sorocaba", campinas: "Campinas", saovicente: "São Vicente", piracicaba: "Piracicaba", alerta: "Número de alertas" };
+  var FLUXO_NOME = { poscompra: "Pós-compra", retirada: "Lembrete de retirada", jornada: "Pós-entrega", teste: "Testes", alerta: "Alertas do sistema" };
+  var STATUS_NOME = { enviado: "Enviada", pendente: "Na fila", cancelado: "Cancelada", erro: "Erro" };
+  function msgNome(k) { return (MSG_NAMES[k] || [k === "lembrete_retirada" ? "Lembrete de retirada" : k === "alerta" ? "Alerta de conexão" : k])[0]; }
+  function telFmt(t) {
+    var d = String(t || "").replace(/\D/g, "").replace(/^55(?=\d{10,11}$)/, "");
+    if (d.length === 11) return "(" + d.slice(0, 2) + ") " + d.slice(2, 7) + "-" + d.slice(7);
+    if (d.length === 10) return "(" + d.slice(0, 2) + ") " + d.slice(2, 6) + "-" + d.slice(6);
+    return t || "-";
+  }
+  function lojaNome(k) { return LOJA_NOME[k] || k || "-"; }
+
+  function renderTabs() {
+    var tabs = [["fluxos", "Fluxos e mensagens"], ["rel", "Relatório de envios"], ["aud", "Auditoria"]];
+    return el("div", { class: "tabs", role: "tablist" }, tabs.map(function (t) {
+      return el("button", { class: "tabbtn", type: "button", role: "tab", "aria-selected": state.tab === t[0] ? "true" : "false", text: t[1], onclick: function () {
+        if (state.tab === t[0]) return;
+        state.tab = t[0]; render();
+        if (t[0] === "rel" && !state.rel.data) loadRel(true);
+        if (t[0] === "aud" && !state.aud.data) loadAud();
+      }});
+    }));
+  }
+
+  // ================== relatório ==================
+  function relPeriodo() {
+    var r = state.rel, t = hoje();
+    if (r.preset === "hoje") return [t, t];
+    if (r.preset === "ontem") { var o = addDias(t, -1); return [o, o]; }
+    if (r.preset === "7d") return [addDias(t, -6), t];
+    if (r.preset === "mes") return [t.slice(0, 8) + "01", t];
+    return [r.ini || t, r.fim || t];
+  }
+  function relArgs() {
+    var r = state.rel, p = relPeriodo();
+    return { p_ini: p[0], p_fim: p[1], p_loja: r.loja || null, p_fluxo: r.fluxo || null, p_mensagem: r.mensagem || null, p_status: r.status || null, p_busca: r.busca || null };
+  }
+  function loadRel(reset) {
+    var r = state.rel; r.loading = true; r.err = null; render();
+    var args = relArgs(); args.p_limite = 100; args.p_offset = reset ? 0 : r.linhas.length;
+    return rpc("painel_relatorio", args).then(function (d) {
+      r.data = d; r.linhas = reset ? (d.linhas || []) : r.linhas.concat(d.linhas || []);
+    }).catch(function (e) { r.err = errText(e); })
+      .then(function () { r.loading = false; render(); });
+  }
+  function exportRel() {
+    var r = state.rel; r.exporting = true; render();
+    rpc("painel_relatorio_exportar", relArgs()).then(function (rows) {
+      var cols = [["quando", "Data e hora"], ["loja", "Loja"], ["cliente", "Cliente"], ["telefone", "Telefone"], ["os", "OS"], ["fluxo", "Fluxo"], ["mensagem", "Mensagem"], ["status", "Status"], ["erro", "Motivo / erro"], ["texto", "Texto enviado"]];
+      function cell(c, v) {
+        if (c === "quando") v = fmt(v, { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
+        else if (c === "loja") v = lojaNome(v); else if (c === "fluxo") v = FLUXO_NOME[v] || v;
+        else if (c === "mensagem") v = msgNome(v); else if (c === "status") v = STATUS_NOME[v] || v;
+        v = v == null ? "" : String(v);
+        return '"' + v.replace(/"/g, '""') + '"';
+      }
+      var lines = [cols.map(function (c) { return '"' + c[1] + '"'; }).join(";")].concat((rows || []).map(function (row) {
+        return cols.map(function (c) { return cell(c[0], row[c[0]]); }).join(";");
+      }));
+      var p = relPeriodo();
+      var blob = new Blob(["﻿" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
+      var a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+      a.download = "envios_" + p[0] + (p[0] === p[1] ? "" : "_a_" + p[1]) + ".csv";
+      document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+      toast((rows || []).length + " mensagens exportadas");
+    }).catch(function (e) { toast(errText(e)); }).then(function () { r.exporting = false; render(); });
+  }
+  function openDetalhe(id) {
+    var r = state.rel; r.detalhe = { loading: true };
+    render();
+    rpc("painel_envio_detalhe", { p_id: id }).then(function (d) { r.detalhe = d; })
+      .catch(function (e) { r.detalhe = { erroTela: errText(e) }; }).then(function () { render(); });
+  }
+  function closeDetalhe() { state.rel.detalhe = null; var m = document.querySelector(".modal-bg"); if (m) m.remove(); }
+
+  function selectEl(id, label, value, opts, onchange) {
+    var s = el("select", { id: id, onchange: function () { onchange(s.value); } }, opts.map(function (o) {
+      var op = el("option", { value: o[0], text: o[1] }); if (o[0] === value) op.selected = true; return op;
+    }));
+    return el("div", { class: "field" }, [el("label", { for: id, text: label }), s]);
+  }
+  function bars(title, items, nameFn) {
+    var max = items.reduce(function (m, i) { return Math.max(m, i.qtd); }, 0) || 1;
+    return el("div", { class: "card" }, [el("h3", { text: title })].concat(items.length ? items.map(function (i) {
+      return el("div", { class: "hbar" }, [el("span", { text: nameFn(i.chave) }), el("i", { style: "width:" + Math.max(1, Math.round(i.qtd / max * 100)) + "%", "aria-hidden": "true" }), el("span", { text: String(i.qtd) })]);
+    }) : [el("p", { class: "hint", text: "Nenhuma mensagem enviada no período." })]));
+  }
+
+  function renderRel() {
+    var r = state.rel, d = r.data, p = relPeriodo();
+    var presets = [["hoje", "Hoje"], ["ontem", "Ontem"], ["7d", "Últimos 7 dias"], ["mes", "Este mês"], ["custom", "Personalizado"]];
+    var chips = el("div", { class: "chips2" }, presets.map(function (x) {
+      return el("button", { class: "chip2", type: "button", "aria-pressed": r.preset === x[0] ? "true" : "false", text: x[1], onclick: function () {
+        if (x[0] === "custom") { r.ini = p[0]; r.fim = p[1]; r.preset = "custom"; render(); return; }
+        r.preset = x[0]; loadRel(true);
+      }});
+    }));
+    var msgOpts = [["", "Todas"]].concat(Object.keys(MSG_NAMES).map(function (k) { return [k, MSG_NAMES[k][0]]; }));
+    var busca = el("input", { id: "rel-busca", type: "search", value: r.busca, placeholder: "Nome, celular ou número da OS", onkeydown: function (e) { if (e.key === "Enter") { r.busca = busca.value.trim(); loadRel(true); } } });
+    var fields = [];
+    if (r.preset === "custom") {
+      var di = el("input", { id: "rel-ini", type: "date", value: r.ini || p[0] }), df = el("input", { id: "rel-fim", type: "date", value: r.fim || p[1] });
+      fields.push(el("div", { class: "field" }, [el("label", { for: "rel-ini", text: "De" }), di]), el("div", { class: "field" }, [el("label", { for: "rel-fim", text: "Até" }), df]));
+      di.onchange = function () { r.ini = di.value; }; df.onchange = function () { r.fim = df.value; };
+    }
+    fields.push(
+      selectEl("rel-loja", "Loja", r.loja, [["", "Todas"]].concat(LOJAS), function (v) { r.loja = v; loadRel(true); }),
+      selectEl("rel-fluxo", "Fluxo", r.fluxo, [["", "Clientes (todos os fluxos)"], ["poscompra", "Pós-compra"], ["retirada", "Lembrete de retirada"], ["jornada", "Pós-entrega"], ["teste", "Testes"], ["alerta", "Alertas do sistema"]], function (v) { r.fluxo = v; loadRel(true); }),
+      selectEl("rel-msg", "Mensagem", r.mensagem, msgOpts, function (v) { r.mensagem = v; loadRel(true); }),
+      selectEl("rel-status", "Status", r.status, [["", "Todos"], ["enviado", "Enviada"], ["pendente", "Na fila"], ["cancelado", "Cancelada"], ["erro", "Erro"]], function (v) { r.status = v; loadRel(true); }),
+      el("div", { class: "field grow" }, [el("label", { for: "rel-busca", text: "Cliente, celular ou OS" }), busca]),
+      el("button", { class: "btn primary", type: "button", text: r.loading ? "Buscando" : "Filtrar", disabled: r.loading ? "disabled" : null, onclick: function () { r.busca = busca.value.trim(); loadRel(true); } }),
+      el("button", { class: "btn", type: "button", text: r.exporting ? "Exportando" : "Exportar planilha", disabled: (r.exporting || !d) ? "disabled" : null, onclick: exportRel })
+    );
+    var out = [chips, el("div", { class: "filters" }, fields)];
+    if (r.err) out.push(el("div", { class: "notice err", role: "alert" }, [el("h2", { text: "Não foi possível carregar o relatório" }), el("p", { text: r.err })]));
+    if (!d) { out.push(el("div", { class: "skeleton" })); return el("section", null, out); }
+
+    var k = d.kpis || {};
+    out.push(el("p", { class: "hint", text: "Período: " + fmt(p[0] + "T12:00:00Z", { day: "2-digit", month: "2-digit", year: "numeric" }) + (p[0] === p[1] ? "" : " a " + fmt(p[1] + "T12:00:00Z", { day: "2-digit", month: "2-digit", year: "numeric" })) + (r.fluxo ? "" : ". Testes e alertas não entram nos números.") }));
+    out.push(el("div", { class: "kpis" }, [
+      ["Enviadas", k.enviadas], ["Na fila", k.na_fila], ["Canceladas", k.canceladas], ["Com erro", k.erros, k.erros > 0], ["Clientes alcançados", k.clientes]
+    ].map(function (x) { return el("div", { class: "kpi" + (x[2] ? " alert" : "") }, [el("small", { text: x[0] }), el("b", { text: String(x[1] || 0) })]); })));
+    out.push(el("div", { class: "cards2" }, [bars("Enviadas por loja", d.por_loja || [], lojaNome), bars("Enviadas por mensagem", d.por_mensagem || [], msgNome)]));
+
+    var rows = r.linhas || [];
+    var body = rows.length ? el("table", { class: "data" }, [
+      el("thead", null, [el("tr", null, ["Horário", "Loja", "Cliente", "OS", "Mensagem", "Prévia", "Status"].map(function (h) { return el("th", { scope: "col", text: h }); }))]),
+      el("tbody", null, rows.map(function (x) {
+        var stSub = x.status === "pendente" ? "agendada " + ddhh(x.agendado_para) : (x.status === "cancelado" || x.status === "erro") ? (x.erro || "") : "";
+        return el("tr", { class: "click", tabindex: "0", "aria-label": "Ver detalhe da mensagem para " + (x.cliente || "cliente"),
+          onclick: function () { openDetalhe(x.id); }, onkeydown: function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openDetalhe(x.id); } } }, [
+          el("td", { class: "num" }, [ddhh(x.quando)]),
+          el("td", { text: lojaNome(x.loja) }),
+          el("td", null, [x.cliente || "-", el("span", { class: "sub num", text: x.telefone || "" })]),
+          el("td", { class: "num", text: x.os || "-" }),
+          el("td", null, [msgNome(x.mensagem), el("span", { class: "sub", text: FLUXO_NOME[x.fluxo] || "" })]),
+          el("td", { class: "prev" }, [(x.previa || "").replace(/\s+/g, " ") + ((x.previa || "").length >= 120 ? "…" : ""), x.imagem ? el("span", { class: "sub", text: "com imagem" }) : null]),
+          el("td", null, [el("span", { class: "st " + x.status, text: STATUS_NOME[x.status] || x.status }), stSub ? el("span", { class: "sub", text: stSub }) : null])
+        ]);
+      }))
+    ]) : el("p", { class: "empty", text: "Nenhuma mensagem encontrada com esses filtros." });
+    var wrap = el("div", { class: "tablewrap" }, [body]);
+    if (rows.length < (d.total || 0)) wrap.appendChild(el("div", { class: "more" }, [el("button", { class: "btn", type: "button", disabled: r.loading ? "disabled" : null,
+      text: r.loading ? "Carregando" : "Carregar mais (" + rows.length + " de " + d.total + ")", onclick: function () { loadRel(false); } })]));
+    out.push(wrap);
+    return el("section", null, out);
+  }
+
+  function renderDetalhe() {
+    var old = document.querySelector(".modal-bg"); if (old) old.remove();
+    var x = state.rel.detalhe, kids;
+    var close = el("button", { class: "btn", type: "button", text: "Fechar", onclick: closeDetalhe });
+    if (x.loading) kids = [el("div", { class: "skeleton" })];
+    else if (x.erroTela) kids = [el("p", { class: "inline-err", text: x.erroTela })];
+    else {
+      var blocks = el("div", { class: "bubble" }); blocks.appendChild(whatsappText(x.texto));
+      var tl = [el("li", null, [el("b", { text: "Criada" }), el("span", { class: "sub", text: ddhh(x.criado_em) })]),
+                el("li", { class: x.disparado_em ? "" : "wait" }, [el("b", { text: "Agendada" }), el("span", { class: "sub", text: ddhh(x.agendado_para) })])];
+      if (x.disparado_em) tl.push(el("li", null, [el("b", { text: "Enviada para a Z-API" }), el("span", { class: "sub", text: ddhh(x.disparado_em) + " · " + (x.tentativas || 1) + "ª tentativa" })]));
+      if (x.status === "enviado") tl.push(el("li", null, [el("b", { text: "Confirmada" }), el("span", { class: "sub", text: ddhh(x.enviado_em) + (x.message_id ? " · ID " + x.message_id.slice(0, 10) + "…" : "") })]));
+      else if (x.status === "cancelado") tl.push(el("li", { class: "bad" }, [el("b", { text: "Cancelada" }), el("span", { class: "sub", text: x.erro || "" })]));
+      else if (x.status === "erro") tl.push(el("li", { class: "bad" }, [el("b", { text: "Erro no envio" }), el("span", { class: "sub", text: x.erro || "" })]));
+      else if (x.erro) tl.push(el("li", { class: "wait" }, [el("b", { text: "Aguardando" }), el("span", { class: "sub", text: x.erro })]));
+      kids = [
+        el("dl", { class: "kv" }, [
+          el("dt", { text: "Cliente" }), el("dd", { text: x.cliente || "-" }),
+          el("dt", { text: "Celular" }), el("dd", { class: "num", text: telFmt(x.telefone) }),
+          el("dt", { text: "OS" }), el("dd", { class: "num", text: x.os || "-" }),
+          el("dt", { text: "Loja" }), el("dd", { text: lojaNome(x.loja) }),
+          el("dt", { text: "Status" }), el("dd", null, [el("span", { class: "st " + x.status, text: STATUS_NOME[x.status] || x.status })])
+        ]),
+        el("p", { class: "moment", style: "padding-top:16px;margin:0", text: "Texto enviado" }), blocks,
+        x.imagem_url ? el("a", { class: "link", href: x.imagem_url, target: "_blank", rel: "noopener", text: "Ver imagem enviada" }) : null,
+        el("ol", { class: "tl" }, tl)
+      ];
+    }
+    var title = x.loading || x.erroTela ? "Detalhe da mensagem" : msgNome(x.mensagem);
+    var modal = el("div", { class: "modal", role: "dialog", "aria-modal": "true", "aria-label": "Detalhe da mensagem" },
+      [el("div", { class: "modal-head" }, [el("div", null, [el("h2", { text: title }), x.fluxo ? el("span", { class: "sub", text: FLUXO_NOME[x.fluxo] || "" }) : null]), close])].concat(kids));
+    var bg = el("div", { class: "modal-bg", onclick: function (e) { if (e.target === bg) closeDetalhe(); } }, [modal]);
+    bg.addEventListener("keydown", function (e) { if (e.key === "Escape") closeDetalhe(); });
+    setTimeout(function () { close.focus(); }, 0);
+    return bg;
+  }
+
+  // ================== auditoria ==================
+  function loadAud() {
+    var a = state.aud, t = hoje(); a.loading = true; a.err = null; render();
+    return Promise.all([
+      rpc("painel_auditoria_listar", { p_ini: addDias(t, -(a.dias - 1)), p_fim: t, p_autor: a.autor || null, p_acao: a.acao || null, p_limite: 500 }),
+      rpc("painel_saude")
+    ]).then(function (res) { a.data = res[0]; a.saude = res[1]; })
+      .catch(function (e) { a.err = errText(e); }).then(function () { a.loading = false; render(); });
+  }
+  var ROTINA_NOME = { followup_disparar: "Disparador", followup_enfileirar_diario: "Envio diário (10h)", followup_lembrete_retirada: "Lembretes de retirada",
+    whatsapp_status_checar: "Verificação do WhatsApp", whatsapp_alertas_conexao: "Alertas de conexão" };
+  function alvoNome(acao, alvo) {
+    if (/mensagem|texto/i.test(acao)) return msgNome(alvo);
+    return alvo || "";
+  }
+  function mudouEl(x) {
+    if (x.acao === "Editou texto" || x.acao === "Criou mensagem" || x.acao === "Apagou mensagem") {
+      var parts = [];
+      if (x.antes && x.antes.texto != null) parts.push(el("div", { class: "old" }, [el("b", { text: "Antes" }), x.antes.texto]));
+      if (x.depois && x.depois.texto != null) parts.push(el("div", { class: "new" }, [el("b", { text: "Depois" }), x.depois.texto]));
+      return el("div", { class: "diff" }, parts);
+    }
+    var lig = /loja|fluxo/i.test(x.acao), msg = /mensagem/i.test(x.acao);
+    function v(b) { return typeof b === "boolean" ? (lig ? (b ? "ligado" : "desligado") : msg ? (b ? "ativa" : "pausada") : String(b)) : String(b); }
+    var kids = [];
+    if (x.antes != null && x.depois != null && typeof x.antes !== "object") kids.push(el("span", null, [el("b", { text: v(x.antes) }), " → ", el("b", { text: v(x.depois) })]));
+    if (x.detalhe) kids.push(el("span", { class: kids.length ? "sub" : "", text: x.detalhe }));
+    return el("div", null, kids.length ? kids : ["-"]);
+  }
+  function renderAud() {
+    var a = state.aud, d = a.data;
+    var chips = el("div", { class: "chips2" }, [[7, "Últimos 7 dias"], [30, "Últimos 30 dias"], [90, "Últimos 90 dias"], [365, "Último ano"]].map(function (x) {
+      return el("button", { class: "chip2", type: "button", "aria-pressed": a.dias === x[0] ? "true" : "false", text: x[1], onclick: function () { a.dias = x[0]; loadAud(); } });
+    }));
+    var out = [chips];
+    if (d) out.push(el("div", { class: "filters" }, [
+      selectEl("aud-autor", "Quem", a.autor, [["", "Todos"]].concat((d.autores || []).map(function (x) { return [x, x]; })), function (v) { a.autor = v; loadAud(); }),
+      selectEl("aud-acao", "Tipo de ação", a.acao, [["", "Todas"]].concat((d.acoes || []).map(function (x) { return [x, x]; })), function (v) { a.acao = v; loadAud(); }),
+      el("button", { class: "btn", type: "button", text: a.loading ? "Atualizando" : "Atualizar", disabled: a.loading ? "disabled" : null, onclick: loadAud })
+    ]));
+    if (a.err) out.push(el("div", { class: "notice err", role: "alert" }, [el("h2", { text: "Não foi possível carregar a auditoria" }), el("p", { text: a.err })]));
+    if (a.saude) {
+      var rot = a.saude.rotinas || [];
+      out.push(el("div", { class: "card", style: "margin-bottom:16px" }, [el("h3", { text: "Saúde do sistema" }),
+        el("div", { class: "health" }, rot.map(function (j) {
+          var bad = !j.ativa || j.ultima_ok === false || j.falhas_24h > 0;
+          return el("div", { class: "kpi" + (bad ? " alert" : "") }, [el("small", { text: ROTINA_NOME[j.nome] || j.nome }),
+            el("b", { text: !j.ativa ? "Desligada" : j.ultima_ok === false ? "Falhou na última execução" : "OK · " + (j.ultima ? "há " + ago(j.ultima) : "sem execução") }),
+            el("span", { class: "sub", text: j.falhas_24h + " falha(s) em 24h" })]);
+        }).concat([el("div", { class: "kpi" + (a.saude.erros_envio_24h > 0 ? " alert" : "") }, [el("small", { text: "Mensagens com erro em 24h" }), el("b", { text: String(a.saude.erros_envio_24h || 0) })])]))
+      ]));
+    }
+    if (!d) { out.push(el("div", { class: "skeleton" })); return el("section", null, out); }
+    var rows = d.linhas || [];
+    out.push(el("div", { class: "tablewrap" }, [rows.length ? el("table", { class: "data" }, [
+      el("thead", null, [el("tr", null, ["Quando", "Quem", "Ação", "O que mudou"].map(function (h) { return el("th", { scope: "col", text: h }); }))]),
+      el("tbody", null, rows.map(function (x) {
+        return el("tr", null, [
+          el("td", { class: "num", text: ddhh(x.em) }),
+          el("td", { style: "overflow-wrap:anywhere;max-width:220px", text: x.autor }),
+          el("td", null, [x.acao, el("span", { class: "sub", text: alvoNome(x.acao, x.alvo) })]),
+          el("td", { style: "min-width:280px" }, [mudouEl(x)])
+        ]);
+      }))
+    ]) : el("p", { class: "empty", text: "Nenhuma ação registrada nesse período. A auditoria começou a registrar em 04/11/2026." })]));
+    out.push(el("p", { class: "hint", style: "margin-top:12px", text: "O registro de auditoria não pode ser alterado nem apagado." }));
+    return el("section", null, out);
+  }
+
   function render() {
     if (!state.data) return;
     var focusLabel = document.activeElement && document.activeElement.getAttribute("aria-label");
     app.textContent = "";
-    app.appendChild(renderStores());
-    app.appendChild(el("ol", { class: "timeline" }, FLOWS.map(renderFlow)));
+    document.querySelector(".wrap").classList.toggle("wide", state.tab !== "fluxos");
+    document.getElementById("footnote").hidden = state.tab !== "fluxos";
+    app.appendChild(renderTabs());
+    if (state.tab === "rel") app.appendChild(renderRel());
+    else if (state.tab === "aud") app.appendChild(renderAud());
+    else {
+      app.appendChild(renderStores());
+      app.appendChild(el("ol", { class: "timeline" }, FLOWS.map(renderFlow)));
+    }
+    if (state.rel.detalhe) document.body.appendChild(renderDetalhe());
     app.appendChild(el("div", { class: "userline" }, [
       "Conectado como " + ((state.user && state.user.email) || ""),
       el("button", { class: "link", type: "button", text: "Sair", onclick: function () { sb.auth.signOut(); } })
@@ -656,7 +1057,7 @@
     ]));
   }
 
-  document.getElementById("refresh").addEventListener("click", function () { load(); });
+  document.getElementById("refresh").addEventListener("click", function () { load(); if (state.tab === "rel") loadRel(true); if (state.tab === "aud") loadAud(); });
 
   // ---------- início ----------
   if (!window.supabase || !window.supabase.createClient) {
