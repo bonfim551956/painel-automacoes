@@ -410,34 +410,39 @@
     });
   }
 
-  // ---------- login ----------
+  // ---------- login: agora é só pelo Central Idealize (login único) ----------
+  var CENTRAL = "https://central.oticasidealize.online";
+  var timerCentral = null;
   function renderLogin(msg) {
     document.getElementById("refresh").hidden = true;
     document.getElementById("footnote").hidden = true;
     document.getElementById("updated").textContent = "";
     app.textContent = "";
-    var email = el("input", { id: "email", type: "email", autocomplete: "username", required: "required", value: store("painel_email") || "" });
-    var pass = el("input", { id: "senha", type: "password", autocomplete: "current-password", required: "required" });
-    var err = el("p", { class: "inline-err", role: "alert", text: msg || "" });
-    var btn = el("button", { class: "btn primary", type: "submit", text: "Entrar" });
-    var form = el("form", { class: "login", novalidate: "novalidate", onsubmit: function (e) {
-      e.preventDefault();
-      if (!email.value || !pass.value) { err.textContent = "Preencha e-mail e senha."; return; }
-      btn.disabled = true; btn.textContent = "Entrando"; err.textContent = "";
-      sb.auth.signInWithPassword({ email: email.value.trim(), password: pass.value }).then(function (res) {
-        if (res.error) throw res.error;
-        store("painel_email", email.value.trim());
-      }).catch(function (e2) {
-        err.textContent = errText(e2); btn.disabled = false; btn.textContent = "Entrar";
-        pass.setAttribute("aria-invalid", "true");
-      });
-    }}, [
-      el("div", { class: "field" }, [el("label", { for: "email", text: "E-mail" }), email]),
-      el("div", { class: "field" }, [el("label", { for: "senha", text: "Senha" }), pass]),
-      btn, err
-    ]);
-    app.appendChild(form);
-    (email.value ? pass : email).focus();
+    if (timerCentral) { clearInterval(timerCentral); timerCentral = null; }
+    var dentro = (function () { try { return window.self !== window.top; } catch (_) { return true; } })();
+    var ir = function () { window.location.replace(CENTRAL + "/s/automacoes"); };
+    if (dentro) {
+      var tentar = el("button", { class: "btn primary", type: "button", text: "Tentar de novo", onclick: function () { window.location.reload(); } });
+      app.appendChild(el("div", { class: "login" }, [
+        el("p", { text: "Não recebemos o seu acesso do Central." }),
+        el("p", { class: "inline-err", role: "alert", text: msg || "Recarregue a página do Central. Se continuar, saia e entre de novo no Central." }),
+        tentar
+      ]));
+      return;
+    }
+    var seg = 3;
+    var aviso = el("p", { "aria-live": "polite", text: "Redirecionando em 3 segundos…" });
+    var btn = el("button", { class: "btn primary", type: "button", text: "Entrar pelo Central", onclick: ir });
+    app.appendChild(el("div", { class: "login" }, [
+      el("p", { text: "O acesso agora é pelo Central Idealize. Use o seu e-mail e senha do Central." }),
+      btn, aviso
+    ]));
+    btn.focus();
+    timerCentral = setInterval(function () {
+      seg -= 1;
+      if (seg <= 0) { clearInterval(timerCentral); timerCentral = null; ir(); return; }
+      aviso.textContent = "Redirecionando em " + seg + (seg === 1 ? " segundo…" : " segundos…");
+    }, 1000);
   }
 
   // ---------- dados ----------
@@ -1068,7 +1073,7 @@
 
   // ---------- entrada pelo Central Idealize (login único) ----------
   // Dentro do Central, o painel pede o token da sessão do Central, troca por um código de uso único
-  // (função entrar-central) e abre a sessão da pessoa certa. Fora do Central, nada muda.
+  // (função entrar-central) e abre a sessão da pessoa certa. Fora do Central, manda para o Central.
   var ORIGENS_CENTRAL = ["https://central.oticasidealize.online", "https://central-idealize.vercel.app"];
   var embutido = (function () { try { return window.self !== window.top; } catch (_) { return true; } })();
   var deCentral = function (e) { return ORIGENS_CENTRAL.indexOf(e.origin) >= 0 && e.source === window.parent; };
