@@ -7,14 +7,10 @@ Site estático (um único `index.html`) para ligar, desligar, editar e testar os
 2. Na Vercel: **Add New → Project**, importe o repositório e clique em **Deploy** (sem configuração extra).
 
 ## Liberar um usuário
-1. Supabase (Sistema ADM) → **Authentication → Users → Add user → Create new user**, com e-mail e senha
-   (marque **Auto Confirm User**).
-2. No SQL Editor, dê acesso ao painel:
-   ```sql
-   insert into painel_admins (user_id, email)
-   select id, email from auth.users where email = 'email@dapessoa.com';
-   ```
-Para remover o acesso: `delete from painel_admins where email = 'email@dapessoa.com';`
+O painel não tem login próprio: a pessoa entra pelo Central Idealize.
+Para liberar, use o Central → Gestão de acessos → pessoa → Automações → **Liberar acesso**.
+No primeiro acesso, o cadastro dela no painel (`painel_admins`) é criado sozinho com o e-mail do Central.
+Para tirar, use **Retirar** no Central.
 
 ## Segurança
 - A chave no código é a chave **pública** do Supabase. Ela sozinha não dá acesso a nada do painel.

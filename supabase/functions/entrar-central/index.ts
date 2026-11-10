@@ -1,10 +1,11 @@
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
 import { createClient } from 'jsr:@supabase/supabase-js@2'
 
-// Entrada pelo Central Idealize (login único) no Painel de Automações. Não substitui o login do painel: é uma porta a mais.
+// Entrada pelo Central Idealize (login único) no Painel de Automações (o painel não tem mais login próprio).
 // Quem chama manda o token da sessão do Central (projeto do RH). Aqui:
 //  1) o próprio RH confirma o token e diz com qual e-mail a pessoa entra no painel (central_meu_acesso);
-//  2) o e-mail precisa estar em painel_admins (a mesma regra do login normal);
+//  2) se a pessoa ainda não tem cadastro no painel, ele é criado agora com o e-mail do Central
+//     (quem libera ou retira o acesso é a Gestão de acessos do Central);
 //  3) devolvemos um código de uso único para a tela abrir a sessão (verifyOtp). Nenhum e-mail é enviado.
 // Sem segredo compartilhado: só a chave pública (anon) do RH é usada.
 const RH_URL = 'https://ifqaukdkurkirmahpuky.supabase.co'
@@ -54,16 +55,37 @@ Deno.serve(async (req) => {
   if (!conta) return resp({ erro: 'Você não tem acesso liberado a este painel no Central.' }, 403)
   const literal = conta.replace(/[\\%_]/g, (c) => '\\' + c)
 
-  // 2) precisa ser administrador do painel (mesma regra do login normal)
+  // 2) cadastro no painel: usa o que existe ou cria agora (liberado no Central = administrador do painel)
   const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, {
     auth: { persistSession: false },
   })
   const { data: adm } = await admin.from('painel_admins').select('user_id').ilike('email', literal).limit(2)
-  if (!adm || adm.length !== 1) {
-    console.warn('entrar_central_sem_conta', { conta, nomeCentral })
-    return resp({ erro: 'O e-mail ligado a você no Central não tem acesso a este painel.' }, 404)
+  if (adm && adm.length > 1) return resp({ erro: 'Há mais de um cadastro com este e-mail no painel.' }, 409)
+  let userId = adm?.[0]?.user_id as string | undefined
+  if (!userId) {
+    const senha = crypto.randomUUID() + crypto.randomUUID()
+    const { data: novo, error: eNovo } = await admin.auth.admin.createUser({ email: conta, password: senha, email_confirm: true })
+    if (novo?.user) userId = novo.user.id
+    else if (/already|registered|exists/i.test(eNovo?.message ?? '')) {
+      // já existe login com este e-mail neste projeto: procura e reaproveita
+      for (let page = 1; page <= 10 && !userId; page++) {
+        const { data: lista } = await admin.auth.admin.listUsers({ page, perPage: 200 })
+        userId = lista?.users.find((x) => (x.email ?? '').toLowerCase() === conta)?.id
+        if (!lista || lista.users.length < 200) break
+      }
+    }
+    if (!userId) {
+      console.error('entrar_central_criar', { conta, erro: eNovo?.message })
+      return resp({ erro: 'Não foi possível criar o seu acesso ao painel agora.' }, 500)
+    }
+    const { error: eAdm } = await admin.from('painel_admins').insert({ user_id: userId, email: conta })
+    if (eAdm) {
+      console.error('entrar_central_admin', { conta, erro: eAdm.message })
+      return resp({ erro: 'Não foi possível criar o seu acesso ao painel agora.' }, 500)
+    }
+    console.log('entrar_central_cadastro_criado', { conta, nomeCentral })
   }
-  const { data: au, error: eAu } = await admin.auth.admin.getUserById(adm[0].user_id)
+  const { data: au, error: eAu } = await admin.auth.admin.getUserById(userId)
   if (eAu || !au?.user?.email) return resp({ erro: 'Usuário não encontrado neste painel.' }, 404)
 
   // 3) código de uso único para abrir a sessão (não envia e-mail)
